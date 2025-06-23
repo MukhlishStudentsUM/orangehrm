@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OrangeHRM is a comprehensive Human Resource Management (HRM) System that captures
  * all the essential functionalities required for any enterprise.
@@ -25,26 +26,28 @@ use OrangeHRM\Core\Traits\Service\NumberHelperTrait;
 
 /**
  * @OA\Schema(
- *     schema="Attendance-AttendanceRecordListModel",
- *     type="object",
- *     @OA\Property(property="id", type="integer"),
- *     @OA\Property(
- *         property="punchIn",
- *         type="object",
- *         @OA\Property(property="userDate", type="string", format="date"),
- *         @OA\Property(property="userTime", type="string"),
- *         @OA\Property(property="offset", type="string"),
- *         @OA\Property(property="note", type="string")
- *     ),
- *     @OA\Property(
- *         property="punchOut",
- *         type="object",
- *         @OA\Property(property="userDate", type="string", format="date"),
- *         @OA\Property(property="userTime", type="string"),
- *         @OA\Property(property="offset", type="string"),
- *         @OA\Property(property="note", type="string")
- *     ),
- *     @OA\Property(property="duration", type="integer"),
+ * schema="Attendance-AttendanceRecordListModel",
+ * type="object",
+ * @OA\Property(property="id", type="integer"),
+ * @OA\Property(
+ * property="punchIn",
+ * type="object",
+ * @OA\Property(property="userDate", type="string", format="date"),
+ * @OA\Property(property="userTime", type="string"),
+ * @OA\Property(property="offset", type="string"),
+ * @OA\Property(property="note", type="string"),
+ * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchIn
+ * ),
+ * @OA\Property(
+ * property="punchOut",
+ * type="object",
+ * @OA\Property(property="userDate", type="string", format="date"),
+ * @OA\Property(property="userTime", type="string"),
+ * @OA\Property(property="offset", type="string"),
+ * @OA\Property(property="note", type="string"),
+ * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchOut
+ * ),
+ * @OA\Property(property="duration", type="integer"),
  * )
  */
 class AttendanceRecordListModel implements CollectionNormalizable, ModelConstructorArgsAwareInterface
@@ -80,6 +83,7 @@ class AttendanceRecordListModel implements CollectionNormalizable, ModelConstruc
                     ),
                     'offset' => $employeeAttendanceRecord['punchInTimeOffset'],
                     'note' => $employeeAttendanceRecord['punchInNote'],
+                    'address' => $employeeAttendanceRecord['punchInAddress'], // PENAMBAHAN: Memasukkan data alamat punchIn
                 ],
                 'punchOut' => [
                     'userDate' => $this->getDateTimeHelper()->formatDateTimeToYmd(
@@ -90,6 +94,7 @@ class AttendanceRecordListModel implements CollectionNormalizable, ModelConstruc
                     ),
                     'offset' => $employeeAttendanceRecord['punchOutTimeOffset'],
                     'note' => $employeeAttendanceRecord['punchOutNote'],
+                    'address' => $employeeAttendanceRecord['punchOutAddress'], // PENAMBAHAN: Memasukkan data alamat punchOut
                 ],
                 'duration' => $this->getNumberHelper()
                     ->numberFormat((float)$employeeAttendanceRecord['total'] / 3600, 2)

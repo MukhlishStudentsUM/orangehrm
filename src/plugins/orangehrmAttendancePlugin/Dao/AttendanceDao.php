@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OrangeHRM is a comprehensive Human Resource Management (HRM) System that captures
  * all the essential functionalities required for any enterprise.
@@ -450,9 +451,11 @@ class AttendanceDao extends BaseDao
             'attendanceRecord.id',
             'attendanceRecord.punchInUserTime AS punchInTime',
             'attendanceRecord.punchInNote AS punchInNote',
+            'attendanceRecord.punchInAddress AS punchInAddress',
             'attendanceRecord.punchInTimeOffset AS punchInTimeOffset',
             'attendanceRecord.punchOutUserTime AS punchOutTime',
             'attendanceRecord.punchOutNote AS punchOutNote',
+            'attendanceRecord.punchOutAddress AS punchOutAddress',
             'attendanceRecord.punchOutTimeOffset AS punchOutTimeOffset',
             'IDENTITY(employee.employeeTerminationRecord) AS terminationId',
             'employee.empNumber as empNumber',

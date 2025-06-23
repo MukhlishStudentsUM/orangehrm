@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OrangeHRM is a comprehensive Human Resource Management (HRM) System that captures
  * all the essential functionalities required for any enterprise.
@@ -24,46 +25,48 @@ use OrangeHRM\Entity\AttendanceRecord;
 
 /**
  * @OA\Schema(
- *     schema="Attendance-AttendanceRecordModel",
- *     type="object",
- *     @OA\Property(property="id", type="integer"),
- *     @OA\Property(
- *         property="punchIn",
- *         type="object",
- *         @OA\Property(property="utcDate", type="string", format="date"),
- *         @OA\Property(property="utcTime", type="string"),
- *         @OA\Property(property="userDate", type="string", format="date"),
- *         @OA\Property(property="userTime", type="string"),
- *         @OA\Property(property="timezoneOffset", type="string"),
- *         @OA\Property(property="note", type="string")
- *     ),
- *     @OA\Property(
- *         property="punchOut",
- *         type="object",
- *         @OA\Property(property="utcDate", type="string", format="date"),
- *         @OA\Property(property="utcTime", type="string"),
- *         @OA\Property(property="userDate", type="string", format="date"),
- *         @OA\Property(property="userTime", type="string"),
- *         @OA\Property(property="timezoneOffset", type="string"),
- *         @OA\Property(property="note", type="string")
- *     ),
- *     @OA\Property(
- *         property="state",
- *         type="object",
- *         @OA\Property(property="id", type="string"),
- *         @OA\Property(property="name", type="string"),
- *     ),
- *     @OA\Property(
- *         property="employee",
- *         type="object",
- *         @OA\Property(property="empNumber", type="integer"),
- *         @OA\Property(property="employeeId", type="string"),
- *         @OA\Property(property="firstName", type="string"),
- *         @OA\Property(property="lastName", type="string"),
- *         @OA\Property(property="middleName", type="string"),
- *         @OA\Property(property="terminationId", type="integer"),
- *     ),
- *     @OA\Property(property="duration", type="integer"),
+ * schema="Attendance-AttendanceRecordModel",
+ * type="object",
+ * @OA\Property(property="id", type="integer"),
+ * @OA\Property(
+ * property="punchIn",
+ * type="object",
+ * @OA\Property(property="utcDate", type="string", format="date"),
+ * @OA\Property(property="utcTime", type="string"),
+ * @OA\Property(property="userDate", type="string", format="date"),
+ * @OA\Property(property="userTime", type="string"),
+ * @OA\Property(property="timezoneOffset", type="string"),
+ * @OA\Property(property="note", type="string"),
+ * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchIn
+ * ),
+ * @OA\Property(
+ * property="punchOut",
+ * type="object",
+ * @OA\Property(property="utcDate", type="string", format="date"),
+ * @OA\Property(property="utcTime", type="string"),
+ * @OA\Property(property="userDate", type="string", format="date"),
+ * @OA\Property(property="userTime", type="string"),
+ * @OA\Property(property="timezoneOffset", type="string"),
+ * @OA\Property(property="note", type="string"),
+ * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchOut
+ * ),
+ * @OA\Property(
+ * property="state",
+ * type="object",
+ * @OA\Property(property="id", type="string"),
+ * @OA\Property(property="name", type="string"),
+ * ),
+ * @OA\Property(
+ * property="employee",
+ * type="object",
+ * @OA\Property(property="empNumber", type="integer"),
+ * @OA\Property(property="employeeId", type="string"),
+ * @OA\Property(property="firstName", type="string"),
+ * @OA\Property(property="lastName", type="string"),
+ * @OA\Property(property="middleName", type="string"),
+ * @OA\Property(property="terminationId", type="integer"),
+ * ),
+ * @OA\Property(property="duration", type="integer"),
  * )
  */
 class AttendanceRecordModel implements Normalizable
@@ -82,12 +85,14 @@ class AttendanceRecordModel implements Normalizable
                 ['getDecorator', 'getPunchInUserTime'],
                 'punchInTimeOffset',
                 'punchInNote',
+                'punchInAddress', // PENAMBAHAN: Filter untuk mengambil properti 'punchInAddress' dari entity
                 ['getDecorator', 'getPunchOutUTCDate'],
                 ['getDecorator', 'getPunchOutUTCTime'],
                 ['getDecorator', 'getPunchOutUserDate'],
                 ['getDecorator', 'getPunchOutUserTime'],
                 'punchOutTimeOffset',
                 'punchOutNote',
+                'punchOutAddress', // PENAMBAHAN: Filter untuk mengambil properti 'punchOutAddress' dari entity
                 'state',
                 ['getDecorator', 'getAttendanceState'],
                 ['getEmployee', 'getEmpNumber'],
@@ -107,12 +112,14 @@ class AttendanceRecordModel implements Normalizable
                 ['punchIn', 'userTime'],
                 ['punchIn', 'timezoneOffset'],
                 ['punchIn', 'note'],
+                ['punchIn', 'address'], // PENAMBAHAN: Mendefinisikan nama atribut 'address' di bawah 'punchIn'
                 ['punchOut', 'utcDate'],
                 ['punchOut', 'utcTime'],
                 ['punchOut', 'userDate'],
                 ['punchOut', 'userTime'],
                 ['punchOut', 'timezoneOffset'],
                 ['punchOut', 'note'],
+                ['punchOut', 'address'], // PENAMBAHAN: Mendefinisikan nama atribut 'address' di bawah 'punchOut'
                 ['state', 'id'],
                 ['state', 'name'],
                 ['employee', 'empNumber'],

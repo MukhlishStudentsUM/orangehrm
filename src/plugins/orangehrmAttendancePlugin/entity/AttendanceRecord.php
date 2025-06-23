@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OrangeHRM is a comprehensive Human Resource Management (HRM) System that captures
  * all the essential functionalities required for any enterprise.
@@ -71,6 +72,12 @@ class AttendanceRecord
      * @ORM\Column(name="punch_in_note", type="string", length=255, nullable=true)
      */
     private ?string $punchInNote = null;
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="punch_in_address", type="string", length=255, nullable=true)
+     */
+    private ?string $punchInAddress = null;
 
     /**
      * @var string|null
@@ -106,6 +113,12 @@ class AttendanceRecord
      * @ORM\Column(name="punch_out_note", type="string", length=255, nullable=true)
      */
     private ?string $punchOutNote = null;
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="punch_out_address", type="string", length=255, nullable=true)
+     */
+    private ?string $punchOutAddress = null;
 
     /**
      * @var string|null
@@ -202,6 +215,22 @@ class AttendanceRecord
     /**
      * @return string|null
      */
+    public function getPunchInAddress(): ?string
+    {
+        return $this->punchInAddress;
+    }
+
+    /**
+     * @param  string|null  $punchInAddress
+     */
+    public function setPunchInAddress(?string $punchInAddress): void
+    {
+        $this->punchInAddress = $punchInAddress;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getPunchInTimeOffset(): ?string
     {
         return $this->punchInTimeOffset;
@@ -261,6 +290,22 @@ class AttendanceRecord
     public function setPunchOutNote(?string $punchOutNote): void
     {
         $this->punchOutNote = $punchOutNote;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPunchOutAddress(): ?string
+    {
+        return $this->punchOutAddress;
+    }
+
+    /**
+     * @param  string|null  $punchOutAddress
+     */
+    public function setPunchOutAddress(?string $punchOutAddress): void
+    {
+        $this->punchOutAddress = $punchOutAddress;
     }
 
     /**

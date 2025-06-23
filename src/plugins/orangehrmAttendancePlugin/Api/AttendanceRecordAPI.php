@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OrangeHRM is a comprehensive Human Resource Management (HRM) System that captures
  * all the essential functionalities required for any enterprise.
@@ -50,42 +51,45 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
     use UserRoleManagerTrait;
     use DateTimeHelperTrait;
 
+    // PENAMBAHAN: Konstanta baru untuk parameter alamat punch in dan punch out
     public const PARAMETER_PUNCH_IN_DATE = 'punchInDate';
     public const PARAMETER_PUNCH_IN_TIME = 'punchInTime';
     public const PARAMETER_PUNCH_IN_NOTE = 'punchInNote';
+    public const PARAMETER_PUNCH_IN_ADDRESS = 'punchInAddress'; // BARU
     public const PARAMETER_PUNCH_IN_OFFSET = 'punchInOffset';
     public const PARAMETER_PUNCH_IN_TIMEZONE_NAME = 'punchInTimezoneName';
     public const PARAMETER_PUNCH_OUT_DATE = 'punchOutDate';
     public const PARAMETER_PUNCH_OUT_TIME = 'punchOutTime';
     public const PARAMETER_PUNCH_OUT_NOTE = 'punchOutNote';
+    public const PARAMETER_PUNCH_OUT_ADDRESS = 'punchOutAddress'; // BARU
     public const PARAMETER_PUNCH_OUT_OFFSET = 'punchOutOffset';
     public const PARAMETER_PUNCH_OUT_TIMEZONE_NAME = 'punchOutTimezoneName';
 
     /**
      * @OA\Get(
-     *     path="/api/v2/attendance/records/{id}",
-     *     tags={"Attendance/Attendance Record"},
-     *     summary="List an Attendance Record",
-     *     operationId="list-an-attendance-record",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="Attendance Record Id",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="data",
-     *                 ref="#/components/schemas/Attendance-DetailedAttendanceRecordModel"
-     *             ),
-     *             @OA\Property(property="meta", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(response="404", ref="#/components/responses/RecordNotFound")
+     * path="/api/v2/attendance/records/{id}",
+     * tags={"Attendance/Attendance Record"},
+     * summary="List an Attendance Record",
+     * operationId="list-an-attendance-record",
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * required=true,
+     * description="Attendance Record Id",
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Response(
+     * response="200",
+     * description="Success",
+     * @OA\JsonContent(
+     * @OA\Property(
+     * property="data",
+     * ref="#/components/schemas/Attendance-DetailedAttendanceRecordModel"
+     * ),
+     * @OA\Property(property="meta", type="object")
+     * )
+     * ),
+     * @OA\Response(response="404", ref="#/components/responses/RecordNotFound")
      * )
      *
      * @inheritDoc
@@ -119,67 +123,71 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
 
     /**
      * @OA\Put(
-     *     path="/api/v2/attendance/records/{id}",
-     *     tags={"Attendance/Attendance Record"},
-     *     summary="Update an Attendance Record",
-     *     operationId="update-an-attendance-record",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="Attendance Record Id",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="punchInDate", type="string", format="date"),
-     *             @OA\Property(property="punchInTime", type="string"),
-     *             @OA\Property(property="punchInOffset", type="number"),
-     *             @OA\Property(property="punchInTimezoneName", type="string"),
-     *             @OA\Property(property="punchOutDate", type="string", format="date"),
-     *             @OA\Property(property="punchOutTime", type="string"),
-     *             @OA\Property(property="punchOutOffset", type="number"),
-     *             @OA\Property(property="punchOutTimezoneName", type="string"),
-     *             @OA\Property(property="punchOutNote", type="string"),
-     *             required={"date", "name", "time", "timezoneOffset", "timezoneName"}
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="data",
-     *                 ref="#/components/schemas/Attendance-AttendanceRecordModel"
-     *             ),
-     *             @OA\Property(property="meta", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(response="404", ref="#/components/responses/RecordNotFound"),
-     *     @OA\Response(
-     *         response="400",
-     *         description="Bad Request - punch in/out overlap",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="error",
-     *                 oneOf={
-     *                     @OA\Property(
-     *                         property="error",
-     *                         type="object",
-     *                         @OA\Property(property="status", type="string", default="400"),
-     *                         @OA\Property(property="message", type="string", default="Punch-In Overlap Found")
-     *                     ),
-     *                     @OA\Property(
-     *                         property="error",
-     *                         type="object",
-     *                         @OA\Property(property="status", type="string", default="400"),
-     *                         @OA\Property(property="message", type="string", default="Punch-Out Overlap Found")
-     *                     ),
-     *                 }
-     *             )
-     *         )
-     *     )
+     * path="/api/v2/attendance/records/{id}",
+     * tags={"Attendance/Attendance Record"},
+     * summary="Update an Attendance Record",
+     * operationId="update-an-attendance-record",
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * required=true,
+     * description="Attendance Record Id",
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\RequestBody(
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="punchInDate", type="string", format="date"),
+     * @OA\Property(property="punchInTime", type="string"),
+     * @OA\Property(property="punchInOffset", type="number"),
+     * @OA\Property(property="punchInTimezoneName", type="string"),
+     * // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'punchInAddress'
+     * @OA\Property(property="punchInAddress", type="string"),
+     * @OA\Property(property="punchOutDate", type="string", format="date"),
+     * @OA\Property(property="punchOutTime", type="string"),
+     * @OA\Property(property="punchOutOffset", type="number"),
+     * @OA\Property(property="punchOutTimezoneName", type="string"),
+     * @OA\Property(property="punchOutNote", type="string"),
+     * // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'punchOutAddress'
+     * @OA\Property(property="punchOutAddress", type="string"),
+     * required={"date", "name", "time", "timezoneOffset", "timezoneName"}
+     * )
+     * ),
+     * @OA\Response(
+     * response="200",
+     * description="Success",
+     * @OA\JsonContent(
+     * @OA\Property(
+     * property="data",
+     * ref="#/components/schemas/Attendance-AttendanceRecordModel"
+     * ),
+     * @OA\Property(property="meta", type="object")
+     * )
+     * ),
+     * @OA\Response(response="404", ref="#/components/responses/RecordNotFound"),
+     * @OA\Response(
+     * response="400",
+     * description="Bad Request - punch in/out overlap",
+     * @OA\JsonContent(
+     * @OA\Property(
+     * property="error",
+     * oneOf={
+     * @OA\Property(
+     * property="error",
+     * type="object",
+     * @OA\Property(property="status", type="string", default="400"),
+     * @OA\Property(property="message", type="string", default="Punch-In Overlap Found")
+     * ),
+     * @OA\Property(
+     * property="error",
+     * type="object",
+     * @OA\Property(property="status", type="string", default="400"),
+     * @OA\Property(property="message", type="string", default="Punch-Out Overlap Found")
+     * ),
+     * }
+     * )
+     * )
+     * )
      * )
      *
      * @inheritDoc
@@ -245,11 +253,13 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 $punchInOffset,
                 $punchInTimezoneName,
                 $punchInNote,
+                $punchInAddress, // PENAMBAHAN: Variabel untuk menyimpan alamat punch in dari request body
                 $punchOutDate,
                 $punchOutTime,
                 $punchOutOffset,
                 $punchOutTimezoneName,
-                $punchOutNote
+                $punchOutNote,
+                $punchOutAddress, // PENAMBAHAN: Variabel untuk menyimpan alamat punch out dari request body
             ) = $this->getRequestBodyParams();
 
             $recordId = $attendanceRecord->getId();
@@ -279,6 +289,7 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 $attendanceRecord->setPunchInUserTime($punchInDateTime);
                 $attendanceRecord->setPunchInUtcTime($punchInUTCDateTime);
                 $attendanceRecord->setPunchInNote($punchInNote);
+                $attendanceRecord->setPunchInAddress($punchInAddress); // PENAMBAHAN: Mengatur alamat punch in ke entitas
                 if ($this->isAllowedToEditTimezone($punchInOffset, $punchInTimezoneName)) {
                     $attendanceRecord->setPunchInTimeOffset($punchInOffset);
                     $attendanceRecord->setPunchInTimezoneName($punchInTimezoneName);
@@ -331,6 +342,7 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 $attendanceRecord->setPunchInUserTime($punchInDateTime);
                 $attendanceRecord->setPunchInUtcTime($punchInUTCDateTime);
                 $attendanceRecord->setPunchInNote($punchInNote);
+                $attendanceRecord->setPunchInAddress($punchInAddress); // PENAMBAHAN: Mengatur alamat punch in ke entitas (lagi, ini mungkin redundant jika blok if pertama dijalankan)
                 if ($this->isAllowedToEditTimezone($punchInOffset, $punchInTimezoneName)) {
                     $attendanceRecord->setPunchInTimeOffset($punchInOffset);
                     $attendanceRecord->setPunchInTimezoneName($punchInTimezoneName);
@@ -338,6 +350,7 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 $attendanceRecord->setPunchOutUserTime($punchOutDateTime);
                 $attendanceRecord->setPunchOutUtcTime($punchOutUTCDateTime);
                 $attendanceRecord->setPunchOutNote($punchOutNote);
+                $attendanceRecord->setPunchOutAddress($punchOutAddress); // PENAMBAHAN: Mengatur alamat punch out ke entitas
                 if ($this->isAllowedToEditTimezone(
                     $punchOutOffset,
                     $punchOutTimezoneName,
@@ -378,6 +391,10 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_PUNCH_IN_NOTE
             ),
+            $this->getRequestParams()->getStringOrNull( // PENAMBAHAN: Mengambil parameter alamat punch in dari request body
+                RequestParams::PARAM_TYPE_BODY,
+                self::PARAMETER_PUNCH_IN_ADDRESS
+            ),
             $this->getRequestParams()->getStringOrNull(
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_PUNCH_OUT_DATE
@@ -397,6 +414,10 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
             $this->getRequestParams()->getStringOrNull(
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_PUNCH_OUT_NOTE
+            ),
+            $this->getRequestParams()->getStringOrNull( // PENAMBAHAN: Mengambil parameter alamat punch out dari request body
+                RequestParams::PARAM_TYPE_BODY,
+                self::PARAMETER_PUNCH_OUT_ADDRESS
             )
         ];
     }
@@ -429,7 +450,8 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
         if (is_null($timezoneOffset) && is_null($timezoneName)) {
             return false;
         } elseif ((is_null($timezoneOffset) && !is_null($timezoneName)) ||
-            (!is_null($timezoneOffset) && is_null($timezoneName))) {
+            (!is_null($timezoneOffset) && is_null($timezoneName))
+        ) {
             throw AttendanceServiceException::invalidTimezoneDetails();
         } //auth user tyring to update employee timezone with valid timezoneOffset and timezoneName
         else {
@@ -474,6 +496,14 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 ),
                 true
             ),
+            // PENAMBAHAN: Aturan validasi untuk parameter alamat punch in
+            $this->getValidationDecorator()->notRequiredParamRule(
+                new ParamRule(
+                    self::PARAMETER_PUNCH_IN_ADDRESS,
+                    new Rule(Rules::STRING_TYPE)
+                ),
+                true
+            ),
             $this->getValidationDecorator()->notRequiredParamRule(
                 new ParamRule(
                     self::PARAMETER_PUNCH_OUT_DATE,
@@ -501,6 +531,14 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
             $this->getValidationDecorator()->notRequiredParamRule(
                 new ParamRule(
                     self::PARAMETER_PUNCH_OUT_NOTE,
+                    new Rule(Rules::STRING_TYPE)
+                ),
+                true
+            ),
+            // PENAMBAHAN: Aturan validasi untuk parameter alamat punch out
+            $this->getValidationDecorator()->notRequiredParamRule(
+                new ParamRule(
+                    self::PARAMETER_PUNCH_OUT_ADDRESS,
                     new Rule(Rules::STRING_TYPE)
                 ),
                 true

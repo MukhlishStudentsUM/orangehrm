@@ -22,19 +22,14 @@
     <oxd-form-row>
       <oxd-grid :cols="4" class="orangehrm-full-width-grid">
         <template v-if="attendanceRecord.previousRecord">
-          <oxd-grid-item
-            :class="
+          <oxd-grid-item :class="
               !attendanceRecord.previousRecord.note ? '--span-column-2' : ''
-            "
-          >
+  ">
             <oxd-input-group :label="$t('attendance.punched_in_time')">
               <oxd-text type="subtitle-2">
                 {{ previousAttendanceRecordDate }} -
                 {{ previousAttendanceRecordTime }}
-                <oxd-text
-                  tag="span"
-                  class="orangehrm-attendance-punchedIn-timezone"
-                >
+                <oxd-text tag="span" class="orangehrm-attendance-punchedIn-timezone">
                   {{ `(GMT ${previousRecordTimezone})` }}
                 </oxd-text>
               </oxd-text>
@@ -50,34 +45,17 @@
           </oxd-grid-item>
         </template>
 
-        <!-- Date Selector -->
         <oxd-grid-item class="--offset-row-2">
-          <date-input
-            :key="attendanceRecord.time"
-            v-model="attendanceRecord.date"
-            :label="$t('general.date')"
-            :rules="rules.date"
-            :disabled="!isEditable"
-            required
-          />
+          <date-input :key="attendanceRecord.time" v-model="attendanceRecord.date" :label="$t('general.date')"
+            :rules="rules.date" :disabled="!isEditable" required />
         </oxd-grid-item>
 
-        <!-- Time  Selector -->
         <oxd-grid-item class="--offset-row-2">
-          <oxd-input-field
-            v-model="attendanceRecord.time"
-            :label="$t('general.time')"
-            :disabled="!isEditable"
-            :rules="rules.time"
-            type="time"
-            :placeholder="$t('attendance.hh_mm')"
-            required
-          />
+          <oxd-input-field v-model="attendanceRecord.time" :label="$t('general.time')" :disabled="!isEditable"
+            :rules="rules.time" type="time" :placeholder="$t('attendance.hh_mm')" required />
         </oxd-grid-item>
       </oxd-grid>
     </oxd-form-row>
-
-    <!-- select timezone -->
 
     <oxd-grid v-if="isTimezoneEditable" :cols="2">
       <oxd-grid-item>
@@ -85,28 +63,47 @@
       </oxd-grid-item>
     </oxd-grid>
 
-    <!-- Note input -->
     <oxd-form-row>
       <oxd-grid :cols="4" class="orangehrm-full-width-grid">
         <oxd-grid-item class="--span-column-2">
-          <oxd-input-field
-            v-model="attendanceRecord.note"
-            :rules="rules.note"
-            :label="$t('general.note')"
-            :placeholder="$t('general.type_here')"
-            type="textarea"
-          />
+          <oxd-input-field v-model="attendanceRecord.note" :rules="rules.note" :label="$t('general.note')"
+            :placeholder="$t('general.type_here')" type="textarea" />
+        </oxd-grid-item>
+      </oxd-grid>
+    </oxd-form-row>
+
+    <oxd-form-row>
+      <oxd-grid :cols="4" class="orangehrm-full-width-grid">
+        <oxd-grid-item class="--span-column-2">
+          <oxd-input-group :label="$t('general.location')">
+            <div id="map" style="height: 300px; width: 100%"></div>
+            <oxd-text type="subtitle-2"></oxd-text>
+            <oxd-text v-if="
+              attendanceRecord.address &&
+              ![
+                'Map not loaded',
+                'Unable to retrieve location',
+                'Geolocation not supported',
+                'Address not found',
+                'Error retrieving address',
+                'Failed to load map',
+              ].includes(attendanceRecord.address)
+            " type="subtitle-2" class="orangehrm-map-address">
+              {{ attendanceRecord.address }}
+            </oxd-text>
+          </oxd-input-group>
+        </oxd-grid-item>
+        <oxd-grid-item class="--span-column-2">
+          <oxd-input-field v-model="attendanceRecord.address" :placeholder="$t('general.address')" type="text"
+            readonly />
         </oxd-grid-item>
       </oxd-grid>
     </oxd-form-row>
     <oxd-divider />
     <oxd-form-actions>
       <required-text />
-      <submit-button
-        :label="
-          !attendanceRecordId ? $t('attendance.in') : $t('attendance.out')
-        "
-      />
+      <submit-button :label="!attendanceRecordId ? $t('attendance.in') : $t('attendance.out')
+        " />
     </oxd-form-actions>
   </oxd-form>
 </template>
@@ -126,11 +123,11 @@ import {
   setClockInterval,
   getStandardTimezone,
 } from '@/core/util/helper/datefns';
-import {promiseDebounce} from '@ohrm/oxd';
+import { promiseDebounce } from '@ohrm/oxd';
 import useLocale from '@/core/util/composable/useLocale';
-import {APIService} from '@ohrm/core/util/services/api.service';
+import { APIService } from '@ohrm/core/util/services/api.service';
 import useDateFormat from '@/core/util/composable/useDateFormat';
-import {reloadPage, navigate} from '@/core/util/helper/navigation';
+import { reloadPage, navigate } from '@/core/util/helper/navigation';
 import TimezoneDropdown from '@/orangehrmAttendancePlugin/components/TimezoneDropdown.vue';
 
 const attendanceRecordModal = {
@@ -139,6 +136,7 @@ const attendanceRecordModal = {
   note: null,
   timezone: null,
   previousRecord: null,
+  address: null, // PENAMBAHAN: Properti untuk menyimpan alamat lokasi
 };
 
 export default {
@@ -170,12 +168,13 @@ export default {
   },
   setup(props) {
     const apiPath = props.employeeId
-      ? `/api/v2/attendance/employees/${props.employeeId}/records`
+      ? // PERUBAHAN: Menggunakan backtick untuk template literal
+      `/api/v2/attendance/employees/${props.employeeId}/records`
       : '/api/v2/attendance/records';
     const http = new APIService(window.appGlobal.baseUrl, apiPath);
-    const {jsDateFormat, userDateFormat, timeFormat, jsTimeFormat} =
+    const { jsDateFormat, userDateFormat, timeFormat, jsTimeFormat } =
       useDateFormat();
-    const {locale} = useLocale();
+    const { locale } = useLocale();
     return {
       http,
       locale,
@@ -188,7 +187,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      attendanceRecord: {...attendanceRecordModal},
+      attendanceRecord: { ...attendanceRecordModal },
       rules: {
         date: [
           required,
@@ -199,6 +198,9 @@ export default {
         note: [shouldNotExceedCharLength(250)],
       },
       previousRecordTimezone: null,
+      map: null, // PENAMBAHAN: Variabel untuk instance peta Leaflet
+      marker: null, // PENAMBAHAN: Variabel untuk marker di peta
+      leafletLoaded: false, // PENAMBAHAN: Status apakah Leaflet sudah dimuat
     };
   },
   computed: {
@@ -207,7 +209,7 @@ export default {
       return formatDate(
         parseDate(this.attendanceRecord.previousRecord.userDate),
         this.jsDateFormat,
-        {locale: this.locale},
+        { locale: this.locale },
       );
     },
     previousAttendanceRecordTime() {
@@ -220,6 +222,10 @@ export default {
         this.jsTimeFormat,
       );
     },
+  },
+  // PENAMBAHAN: Lifecycle hook mounted untuk memuat Leaflet dan peta
+  mounted() {
+    this.loadLeaflet();
   },
   beforeMount() {
     this.isLoading = true;
@@ -243,16 +249,17 @@ export default {
           setClockInterval(this.setCurrentDateTime, 60000);
         let url = '/api/v2/attendance/records/latest';
         if (this.employeeId) {
+          // PERUBAHAN: Menggunakan backtick untuk template literal
           url = `/api/v2/attendance/records/latest?empNumber=${this.employeeId}`;
         }
         return this.attendanceRecordId
-          ? this.http.request({method: 'GET', url})
+          ? this.http.request({ method: 'GET', url })
           : null;
       })
 
       .then((response) => {
         if (response) {
-          const {data} = response.data;
+          const { data } = response.data;
           this.attendanceRecord.previousRecord = data.punchIn;
         }
       })
@@ -266,11 +273,94 @@ export default {
       });
   },
   methods: {
+    // PENAMBAHAN: Metode untuk memuat library Leaflet secara dinamis
+    loadLeaflet() {
+      // Cek apakah Leaflet sudah ada di window
+      if (window.L) {
+        this.leafletLoaded = true;
+        this.initMap();
+        this.getUserLocation();
+        return;
+      }
+      // Jika belum, buat elemen script dan muat Leaflet
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.async = true;
+      script.onload = () => {
+        this.leafletLoaded = true;
+        this.initMap();
+        this.getUserLocation();
+      };
+      // Tangani error jika gagal memuat Leaflet
+      script.onerror = () => {
+        console.error('Failed to load Leaflet.js');
+        this.attendanceRecord.address = 'Failed to load map';
+      };
+      document.head.appendChild(script);
+    },
+    // PENAMBAHAN: Metode untuk menginisialisasi peta
+    initMap() {
+      // Pastikan Leaflet sudah dimuat sebelum inisialisasi peta
+      if (!this.leafletLoaded || !window.L) return;
+      // Inisialisasi peta dan atur tampilan awal
+      this.map = window.L.map('map').setView([0, 0], 13);
+      // Tambahkan tile layer OpenStreetMap
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this.map);
+    },
+    // PENAMBAHAN: Metode untuk mendapatkan lokasi pengguna
+    getUserLocation() {
+      if (!this.leafletLoaded || !window.L) {
+        this.attendanceRecord.address = 'Map not loaded';
+        return;
+      }
+      // Cek apakah Geolocation API didukung browser
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            // Atur tampilan peta ke lokasi pengguna
+            this.map.setView([latitude, longitude], 13);
+            // Tambahkan marker di lokasi pengguna
+            this.marker = window.L.marker([latitude, longitude]).addTo(
+              this.map,
+            ).bindPopup(`<b>You Are Here</b>`).openPopup();
+            // Lakukan reverse geocoding untuk mendapatkan alamat
+            this.reverseGeocode(latitude, longitude);
+          },
+          (error) => {
+            console.error('Geolocation error:', error);
+            this.attendanceRecord.address = 'Unable to retrieve location';
+          },
+        );
+      } else {
+        this.attendanceRecord.address = 'Geolocation not supported';
+      }
+    },
+    // PENAMBAHAN: Metode untuk melakukan reverse geocoding (koordinat ke alamat)
+    reverseGeocode(lat, lon) {
+      // PERUBAHAN: Menggunakan backtick untuk template literal
+      fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.display_name) {
+            this.attendanceRecord.address = data.display_name;
+          } else {
+            this.attendanceRecord.address = 'Address not found';
+          }
+        })
+        .catch((error) => {
+          console.error('Reverse geocoding error:', error);
+          this.attendanceRecord.address = 'Error retrieving address';
+        });
+    },
     onSave() {
       this.isLoading = true;
-
       const timezone = guessTimezone();
-
       this.http
         .request({
           method: this.attendanceRecordId ? 'PUT' : 'POST',
@@ -278,6 +368,7 @@ export default {
             date: this.attendanceRecord.date,
             time: this.attendanceRecord.time,
             note: this.attendanceRecord.note,
+            address: this.attendanceRecord.address, // PENAMBAHAN: Mengirim data alamat ke backend
             timezoneOffset:
               this.attendanceRecord.timezone?._offset ?? timezone.offset,
             timezoneName: this.attendanceRecord.timezone?.id ?? timezone.name,
@@ -301,6 +392,7 @@ export default {
           .request({method: 'GET', url: '/api/v2/attendance/current-datetime'})
           .then((res) => {
             const {utcDate, utcTime} = res.data.data;
+            // PERUBAHAN: Menggunakan backtick untuk template literal
             const currentDate = parseDate(
               `${utcDate} ${utcTime} +00:00`,
               'yyyy-MM-dd HH:mm xxx',
@@ -356,3 +448,10 @@ export default {
 </script>
 
 <style src="./record-attendance.scss" lang="scss" scoped></style>
+<style>
+@import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+
+.orangehrm-map-address {
+  margin-top: 8px;
+}
+</style>

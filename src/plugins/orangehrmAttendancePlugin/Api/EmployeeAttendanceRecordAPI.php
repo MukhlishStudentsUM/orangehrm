@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OrangeHRM is a comprehensive Human Resource Management (HRM) System that captures
  * all the essential functionalities required for any enterprise.
@@ -63,6 +64,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
     public const PARAMETER_TIMEZONE_OFFSET = 'timezoneOffset';
     public const PARAMETER_TIMEZONE_NAME = 'timezoneName';
     public const PARAMETER_NOTE = 'note';
+    public const PARAMETER_ADDRESS = 'address'; // PENAMBAHAN: Konstanta baru untuk parameter alamat
     public const FILTER_FROM_DATE = 'fromDate';
     public const FILTER_TO_DATE = 'toDate';
 
@@ -70,64 +72,63 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
 
     /**
      * @OA\Get(
-     *     path="/api/v2/attendance/employees/{empNumber}/records",
-     *     tags={"Attendance/Employee Attendance"},
-     *     summary="List an Employee's Attendance Records",
-     *     operationId="list-an-employees-attendance-records",
-     *     @OA\PathParameter(
-     *         name="empNumber",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="date",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="fromDate",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="toDate",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="sortField",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="string", enum=AttendanceRecordSearchFilterParams::ALLOWED_SORT_FIELDS)
-     *     ),
-     *     @OA\Parameter(ref="#/components/parameters/sortOrder"),
-     *     @OA\Parameter(ref="#/components/parameters/limit"),
-     *     @OA\Parameter(ref="#/components/parameters/offset"),
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/Attendance-AttendanceRecordListModel")
-     *             ),
-     *             @OA\Property(
-     *                 property="meta",
-     *                 type="object",
-     *                 @OA\Property(property="total", type="integer"),
-     *                 @OA\Property(
-     *                     property="sum",
-     *                     type="object",
-     *                     @OA\Property(property="hours", type="integer"),
-     *                     @OA\Property(property="minutes", type="integer"),
-     *                     @OA\Property(property="label", type="string")
-     *                 )
-     *             )
-     *         )
-     *     )
+     * path="/api/v2/attendance/employees/{empNumber}/records",
+     * tags={"Attendance/Employee Attendance"},
+     * summary="List an Employee's Attendance Records",
+     * operationId="list-an-employees-attendance-records",
+     * @OA\PathParameter(
+     * name="empNumber",
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\Parameter(
+     * name="date",
+     * in="query",
+     * required=false,
+     * @OA\Schema(type="string")
+     * ),
+     * @OA\Parameter(
+     * name="fromDate",
+     * in="query",
+     * required=false,
+     * @OA\Schema(type="string")
+     * ),
+     * @OA\Parameter(
+     * name="toDate",
+     * in="query",
+     * required=false,
+     * @OA\Schema(type="string")
+     * ),
+     * @OA\Parameter(
+     * name="sortField",
+     * in="query",
+     * required=false,
+     * @OA\Schema(type="string", enum=AttendanceRecordSearchFilterParams::ALLOWED_SORT_FIELDS)
+     * ),
+     * @OA\Parameter(ref="#/components/parameters/sortOrder"),
+     * @OA\Parameter(ref="#/components/parameters/limit"),
+     * @OA\Parameter(ref="#/components/parameters/offset"),
+     * @OA\Response(
+     * response="200",
+     * description="Success",
+     * @OA\JsonContent(
+     * @OA\Property(
+     * property="data",
+     * type="array",
+     * @OA\Items(ref="#/components/schemas/Attendance-AttendanceRecordListModel")
+     * ),
+     * @OA\Property(
+     * property="meta",
+     * type="object",
+     * @OA\Property(property="total", type="integer"),
+     * @OA\Property(
+     * property="sum",
+     * type="object",
+     * @OA\Property(property="hours", type="integer"),
+     * @OA\Property(property="minutes", type="integer"),
+     * @OA\Property(property="label", type="string")
+     * )
+     * )
+     * )
      * )
      * @inheritDoc
      */
@@ -152,7 +153,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         );
 
         if ($fromDate != null && $toDate != null && $fromDate > $toDate) {
-            throw $this->getInvalidParamException(["fromDate","toDate"]);
+            throw $this->getInvalidParamException(["fromDate", "toDate"]);
         }
 
         if ($fromDate == null && $toDate == null && $date == null) {
@@ -257,35 +258,36 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
 
     /**
      * @OA\Post(
-     *     path="/api/v2/attendance/employees/{empNumber}/records",
-     *     tags={"Attendance/Employee Attendance"},
-     *     summary="Create an Employee's Attendance Record",
-     *     operationId="create-an-employees-attendance-record",
-     *     @OA\PathParameter(
-     *         name="empNumber",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="date", type="string", format="date"),
-     *             @OA\Property(property="time", type="string"),
-     *             @OA\Property(property="timezoneOffset", type="string"),
-     *             @OA\Property(property="timezoneName", type="string"),
-     *             @OA\Property(property="note", type="string"),
-     *             required={"date", "name", "time", "timezoneOffset", "timezoneName"}
-     *         )
-     *     ),
-     *     @OA\Response(response="200",
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="data",
-     *                 ref="#/components/schemas/Attendance-AttendanceRecordModel"
-     *             ),
-     *             @OA\Property(property="meta", type="object")
-     *         )
-     *     )
+     * path="/api/v2/attendance/employees/{empNumber}/records",
+     * tags={"Attendance/Employee Attendance"},
+     * summary="Create an Employee's Attendance Record",
+     * operationId="create-an-employees-attendance-record",
+     * @OA\PathParameter(
+     * name="empNumber",
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\RequestBody(
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="date", type="string", format="date"),
+     * @OA\Property(property="time", type="string"),
+     * @OA\Property(property="timezoneOffset", type="string"),
+     * @OA\Property(property="timezoneName", type="string"),
+     * @OA\Property(property="note", type="string"),
+     * @OA\Property(property="address", type="string"), // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address'
+     * required={"date", "name", "time", "timezoneOffset", "timezoneName"}
+     * )
+     * ),
+     * @OA\Response(response="200",
+     * description="Success",
+     * @OA\JsonContent(
+     * @OA\Property(
+     * property="data",
+     * ref="#/components/schemas/Attendance-AttendanceRecordModel"
+     * ),
+     * @OA\Property(property="meta", type="object")
+     * )
+     * )
      * )
      *
      * @inheritDoc
@@ -293,7 +295,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
     public function create(): EndpointResourceResult
     {
         try {
-            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note) = $this->getCommonRequestParams();
+            // PERUBAHAN: Menambahkan $address ke daftar variabel yang ditarik dari request body
+            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note, $address) = $this->getCommonRequestParams();
             $allowedWorkflowItems = $this->getUserRoleManager()->getAllowedActions(
                 WorkflowStateMachine::FLOW_ATTENDANCE,
                 AttendanceRecord::STATE_INITIAL,
@@ -321,7 +324,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
                 $punchInDateTime,
                 $timezoneOffset,
                 $timezoneName,
-                $note
+                $note,
+                $address // PENAMBAHAN: Meneruskan $address ke metode setPunchInAttendanceRecord
             );
             $attendanceRecord = $this->getAttendanceService()->getAttendanceDao()->savePunchRecord($attendanceRecord);
             return new EndpointResourceResult(AttendanceRecordModel::class, $attendanceRecord);
@@ -360,6 +364,10 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
             $this->getRequestParams()->getStringOrNull(
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_NOTE
+            ),
+            $this->getRequestParams()->getStringOrNull( // PENAMBAHAN: Mengambil parameter alamat dari request body
+                RequestParams::PARAM_TYPE_BODY,
+                self::PARAMETER_ADDRESS
             )
         ];
     }
@@ -401,6 +409,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
      * @param float $punchInTimezoneOffset
      * @param string $punchInTimezoneName
      * @param string|null $punchInNote
+     * @param string|null $punchInAddress // PENAMBAHAN: Parameter baru untuk alamat punch in
      */
     protected function setPunchInAttendanceRecord(
         AttendanceRecord $attendanceRecord,
@@ -409,7 +418,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         DateTime $punchInUserTime,
         float $punchInTimezoneOffset,
         string $punchInTimezoneName,
-        ?string $punchInNote
+        ?string $punchInNote,
+        ?string $punchInAddress // PENAMBAHAN: Deklarasi parameter alamat
     ): void {
         $attendanceRecord->setState($state);
         $attendanceRecord->setPunchInUtcTime($punchInUtcTime);
@@ -417,6 +427,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         $attendanceRecord->setPunchInTimeOffset($punchInTimezoneOffset);
         $attendanceRecord->setPunchInTimezoneName($punchInTimezoneName);
         $attendanceRecord->setPunchInNote($punchInNote);
+        $attendanceRecord->setPunchInAddress($punchInAddress); // PENAMBAHAN: Mengatur alamat punch in ke entitas
     }
 
     /**
@@ -464,23 +475,30 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
                     new Rule(Rules::LENGTH, [null, self::PARAMETER_RULE_NOTE_MAX_LENGTH])
                 ),
                 true
+            ),
+            $this->getValidationDecorator()->notRequiredParamRule( // PENAMBAHAN: Aturan validasi untuk parameter alamat
+                new ParamRule(
+                    self::PARAMETER_ADDRESS,
+                    new Rule(Rules::STRING_TYPE)
+                ),
+                true
             )
         ];
     }
 
     /**
      * @OA\Delete(
-     *     path="/api/v2/attendance/employees/{empNumber}/records",
-     *     tags={"Attendance/Employee Attendance"},
-     *     summary="Delete an Employee's Attendance Records",
-     *     operationId="delete-an-employees-attendance-records",
-     *     @OA\PathParameter(
-     *         name="empNumber",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(ref="#/components/requestBodies/DeleteRequestBody"),
-     *     @OA\Response(response="200", ref="#/components/responses/DeleteResponse"),
-     *     @OA\Response(response="403", ref="#/components/responses/ForbiddenResponse")
+     * path="/api/v2/attendance/employees/{empNumber}/records",
+     * tags={"Attendance/Employee Attendance"},
+     * summary="Delete an Employee's Attendance Records",
+     * operationId="delete-an-employees-attendance-records",
+     * @OA\PathParameter(
+     * name="empNumber",
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\RequestBody(ref="#/components/requestBodies/DeleteRequestBody"),
+     * @OA\Response(response="200", ref="#/components/responses/DeleteResponse"),
+     * @OA\Response(response="403", ref="#/components/responses/ForbiddenResponse")
      * )
      *
      * @inheritDoc
@@ -507,7 +525,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
                 ->getAttendanceDao()
                 ->getAttendanceRecordsByEmpNumberAndIds($attendanceRecordOwnedEmpNumber, $attendanceRecordIds);
             $userAllowedAttendanceRecordIds = array_map(
-                fn (AttendanceRecord $attendanceRecord) => $attendanceRecord->getId(),
+                fn(AttendanceRecord $attendanceRecord) => $attendanceRecord->getId(),
                 $userAllowedAttendanceRecords
             );
             if (count($userAllowedAttendanceRecordIds) !== count($attendanceRecordIds)) {
@@ -586,35 +604,36 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
 
     /**
      * @OA\Put(
-     *     path="/api/v2/attendance/employees/{empNumber}/records",
-     *     tags={"Attendance/Employee Attendance"},
-     *     summary="Update an Employee's Attendance Record",
-     *     operationId="update-an-employees-attendance-record",
-     *     @OA\PathParameter(
-     *         name="empNumber",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="date", type="string", format="date"),
-     *             @OA\Property(property="time", type="string"),
-     *             @OA\Property(property="timezoneOffset", type="string"),
-     *             @OA\Property(property="timezoneName", type="string"),
-     *             @OA\Property(property="note", type="string"),
-     *             required={"date", "name", "time", "timezoneOffset", "timezoneName"}
-     *         )
-     *     ),
-     *     @OA\Response(response="200",
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="data",
-     *                 ref="#/components/schemas/Attendance-AttendanceRecordModel"
-     *             ),
-     *             @OA\Property(property="meta", type="object")
-     *         )
-     *     )
+     * path="/api/v2/attendance/employees/{empNumber}/records",
+     * tags={"Attendance/Employee Attendance"},
+     * summary="Update an Employee's Attendance Record",
+     * operationId="update-an-employees-attendance-record",
+     * @OA\PathParameter(
+     * name="empNumber",
+     * @OA\Schema(type="integer")
+     * ),
+     * @OA\RequestBody(
+     * @OA\JsonContent(
+     * type="object",
+     * @OA\Property(property="date", type="string", format="date"),
+     * @OA\Property(property="time", type="string"),
+     * @OA\Property(property="timezoneOffset", type="string"),
+     * @OA\Property(property="timezoneName", type="string"),
+     * @OA\Property(property="note", type="string"),
+     * @OA\Property(property="address", type="string"), // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada PUT
+     * required={"date", "name", "time", "timezoneOffset", "timezoneName"}
+     * )
+     * ),
+     * @OA\Response(response="200",
+     * description="Success",
+     * @OA\JsonContent(
+     * @OA\Property(
+     * property="data",
+     * ref="#/components/schemas/Attendance-AttendanceRecordModel"
+     * ),
+     * @OA\Property(property="meta", type="object")
+     * )
+     * )
      * )
      *
      * @inheritDoc
@@ -622,7 +641,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
     public function update(): EndpointResult
     {
         try {
-            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note) = $this->getCommonRequestParams();
+            // PERUBAHAN: Menambahkan $address ke daftar variabel yang ditarik dari request body
+            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note, $address) = $this->getCommonRequestParams();
             $allowedWorkflowItems = $this->getUserRoleManager()->getAllowedActions(
                 WorkflowStateMachine::FLOW_ATTENDANCE,
                 AttendanceRecord::STATE_PUNCHED_IN,
@@ -654,7 +674,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
                 $punchOutDateTime,
                 $timezoneOffset,
                 $timezoneName,
-                $note
+                $note,
+                $address // PENAMBAHAN: Meneruskan $address ke metode setPunchOutAttendanceRecord
             );
             $attendanceRecord = $this->getAttendanceService()->getAttendanceDao()->savePunchRecord($lastPunchInRecord);
             return new EndpointResourceResult(AttendanceRecordModel::class, $attendanceRecord);
@@ -686,6 +707,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
      * @param float $punchOutTimezoneOffset
      * @param string $punchOutTimezoneName
      * @param string|null $punchOutNote
+     * @param string|null $punchOutAddress // PENAMBAHAN: Parameter baru untuk alamat punch out
      */
     protected function setPunchOutAttendanceRecord(
         AttendanceRecord $attendanceRecord,
@@ -694,7 +716,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         DateTime $punchOutUserTime,
         float $punchOutTimezoneOffset,
         string $punchOutTimezoneName,
-        ?string $punchOutNote
+        ?string $punchOutNote,
+        ?string $punchOutAddress // PENAMBAHAN: Deklarasi parameter alamat
     ): void {
         $attendanceRecord->setState($state);
         $attendanceRecord->setPunchOutUtcTime($punchOutUtcTime);
@@ -702,6 +725,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         $attendanceRecord->setPunchOutTimeOffset($punchOutTimezoneOffset);
         $attendanceRecord->setPunchOutTimezoneName($punchOutTimezoneName);
         $attendanceRecord->setPunchOutNote($punchOutNote);
+        $attendanceRecord->setPunchOutAddress($punchOutAddress); // PENAMBAHAN: Mengatur alamat punch out ke entitas
     }
 
     /**

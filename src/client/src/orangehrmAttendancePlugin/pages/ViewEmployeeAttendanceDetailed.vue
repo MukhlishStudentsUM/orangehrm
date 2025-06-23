@@ -216,7 +216,9 @@ export default {
             userDate: punchOutDate,
           },
           duration: item.duration,
+          punchInAddress: punchIn?.address,
           punchInNote: punchIn.note,
+          punchOutAddress: punchOut?.address,
           punchOutNote: punchOut.note,
         };
       });
@@ -270,6 +272,13 @@ export default {
           cellRenderer: this.cellRenderer,
         },
         {
+          name: 'punchInAddress',
+          slot: 'title',
+          cellType: 'oxd-table-cell-truncate',
+          title: this.$t('Punch In Address'),
+          style: { flex: 1 },
+        },
+        {
           name: 'punchInNote',
           slot: 'title',
           cellType: 'oxd-table-cell-truncate',
@@ -282,6 +291,13 @@ export default {
           title: this.$t('attendance.punch_out'),
           style: {flex: 1},
           cellRenderer: this.cellRenderer,
+        },
+        {
+          name: 'punchOutAddress',
+          slot: 'title',
+          cellType: 'oxd-table-cell-truncate',
+          title: this.$t('Punch Out Address'),
+          style: { flex: 1 },
         },
         {
           name: 'punchOutNote',

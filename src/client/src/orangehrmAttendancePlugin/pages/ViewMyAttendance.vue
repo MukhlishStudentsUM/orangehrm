@@ -1,34 +1,10 @@
-<!--
-/**
- * OrangeHRM is a comprehensive Human Resource Management (HRM) System that captures
- * all the essential functionalities required for any enterprise.
- * Copyright (C) 2006 OrangeHRM Inc., http://www.orangehrm.com
- *
- * OrangeHRM is free software: you can redistribute it and/or modify it under the terms of
- * the GNU General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- *
- * OrangeHRM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with OrangeHRM.
- * If not, see <https://www.gnu.org/licenses/>.
- */
- -->
-
 <template>
   <oxd-table-filter :filter-title="$t('attendance.my_attendance_records')">
     <oxd-form @submit-valid="filterItems">
       <oxd-form-row>
         <oxd-grid :cols="4" class="orangehrm-full-width-grid">
           <oxd-grid-item>
-            <date-input
-              v-model="filters.date"
-              :rules="rules.date"
-              :label="$t('general.date')"
-              required
-            />
+            <date-input v-model="filters.date" :rules="rules.date" :label="$t('general.date')" required />
           </oxd-grid-item>
         </oxd-grid>
       </oxd-form-row>
@@ -37,11 +13,7 @@
 
       <oxd-form-actions>
         <required-text />
-        <oxd-button
-          display-type="secondary"
-          :label="$t('general.view')"
-          type="submit"
-        />
+        <oxd-button display-type="secondary" :label="$t('general.view')" type="submit" />
       </oxd-form-actions>
     </oxd-form>
   </oxd-table-filter>
@@ -52,37 +24,22 @@
         {{ $t('time.total_duration') }}: {{ totalDuration }}
       </oxd-text>
     </div>
-    <table-header
-      :total="total"
-      :loading="isLoading"
-      :selected="checkedItems.length"
-      @delete="onClickDeleteSelected"
-    ></table-header>
+    <table-header :total="total" :loading="isLoading" :selected="checkedItems.length"
+      @delete="onClickDeleteSelected"></table-header>
     <div class="orangehrm-container">
-      <oxd-card-table
-        v-model:selected="checkedItems"
-        :headers="headers"
-        :items="items?.data"
-        :selectable="isEditable"
-        :clickable="false"
-        :loading="isLoading"
-        class="orangehrm-my-attendance"
-        row-decorator="oxd-table-decorator-card"
-      />
+      <oxd-card-table v-model:selected="checkedItems" :headers="headers" :items="items?.data" :selectable="isEditable"
+        :clickable="false" :loading="isLoading" class="orangehrm-my-attendance"
+        row-decorator="oxd-table-decorator-card" />
     </div>
     <div class="orangehrm-bottom-container">
-      <oxd-pagination
-        v-if="showPaginator"
-        v-model:current="currentPage"
-        :length="pages"
-      />
+      <oxd-pagination v-if="showPaginator" v-model:current="currentPage" :length="pages" />
     </div>
     <delete-confirmation ref="deleteDialog"></delete-confirmation>
   </div>
 </template>
 
 <script>
-import {computed, ref} from 'vue';
+import { computed, ref } from 'vue';
 import {
   freshDate,
   parseDate,
@@ -91,12 +48,12 @@ import {
   formatDate,
   getStandardTimezone,
 } from '@/core/util/helper/datefns';
-import {navigate} from '@/core/util/helper/navigation';
+import { navigate } from '@/core/util/helper/navigation';
 import useLocale from '@/core/util/composable/useLocale';
-import {APIService} from '@/core/util/services/api.service';
+import { APIService } from '@/core/util/services/api.service';
 import usePaginate from '@ohrm/core/util/composable/usePaginate';
 import useDateFormat from '@/core/util/composable/useDateFormat';
-import {required, validDateFormat} from '@/core/util/validation/rules';
+import { required, validDateFormat } from '@/core/util/validation/rules';
 import RecordCell from '@/orangehrmAttendancePlugin/components/RecordCell.vue';
 import DeleteConfirmationDialog from '@ohrm/components/dialogs/DeleteConfirmationDialog';
 
@@ -117,8 +74,8 @@ export default {
   },
 
   setup(props) {
-    const {locale} = useLocale();
-    const {jsDateFormat, userDateFormat, timeFormat, jsTimeFormat} =
+    const { locale } = useLocale();
+    const { jsDateFormat, userDateFormat, timeFormat, jsTimeFormat } =
       useDateFormat();
 
     const rules = {
@@ -141,11 +98,11 @@ export default {
 
     const attendanceRecordNormalizer = (data) => {
       return data.map((item) => {
-        const {punchIn, punchOut} = item;
+        const { punchIn, punchOut } = item;
         const punchInDate = formatDate(
           parseDate(punchIn?.userDate),
           jsDateFormat,
-          {locale},
+          { locale },
         );
         const punchInTime = formatTime(
           parseTime(punchIn?.userTime, timeFormat),
@@ -154,7 +111,7 @@ export default {
         const punchOutDate = formatDate(
           parseDate(punchOut?.userDate),
           jsDateFormat,
-          {locale},
+          { locale },
         );
         const punchOutTime = formatTime(
           parseTime(punchOut?.userTime, timeFormat),
@@ -173,8 +130,10 @@ export default {
             userTime: punchOutTime,
             userDate: punchOutDate,
           },
-          punchInNote: punchIn.note,
-          punchOutNote: punchOut.note,
+          punchInNote: punchIn?.note,
+          punchInAddress: punchIn?.address, // TAMBAHKAN: Ambil data alamat punch in
+          punchOutNote: punchOut?.note,
+          punchOutAddress: punchOut?.address, // TAMBAHKAN: Ambil data alamat punch out
           duration: item.duration,
         };
       });
@@ -217,12 +176,13 @@ export default {
 
   data() {
     return {
+      // UBAH: Tambahkan header untuk alamat punch in dan punch out
       headers: [
         {
           name: 'punchIn',
           slot: 'title',
           title: this.$t('attendance.punch_in'),
-          style: {flex: 1},
+          style: { flex: 1 },
           cellRenderer: this.cellRenderer,
         },
         {
@@ -230,13 +190,20 @@ export default {
           slot: 'title',
           cellType: 'oxd-table-cell-truncate',
           title: this.$t('attendance.punch_in_note'),
-          style: {flex: 1},
+          style: { flex: 1 },
+        },
+        {
+          name: 'punchInAddress',
+          slot: 'title',
+          cellType: 'oxd-table-cell-truncate',
+          title: this.$t('Punch In Address'),
+          style: { flex: 1 }, 
         },
         {
           name: 'punchOut',
           slot: 'title',
           title: this.$t('attendance.punch_out'),
-          style: {flex: 1},
+          style: { flex: 1 },
           cellRenderer: this.cellRenderer,
         },
         {
@@ -244,20 +211,27 @@ export default {
           slot: 'title',
           cellType: 'oxd-table-cell-truncate',
           title: this.$t('attendance.punch_out_note'),
-          style: {flex: 1},
+          style: { flex: 1 },
+        },
+        {
+          name: 'punchOutAddress',
+          slot: 'title',
+          cellType: 'oxd-table-cell-truncate',
+          title: this.$t('Punch Out Address'),
+          style: { flex: 1 }, 
         },
         {
           name: 'duration',
           slot: 'title',
           title: this.$t('attendance.duration_hours'),
-          style: {flex: 1},
+          style: { flex: 1 },
         },
         {
           ...(this.isEditable && {
             name: 'actions',
             slot: 'action',
             title: this.$t('general.actions'),
-            style: {flex: 1},
+            style: { flex: 1 },
             cellType: 'oxd-table-cell-actions',
             cellConfig: {
               delete: {
@@ -294,7 +268,7 @@ export default {
       };
     },
     onClickEdit(item) {
-      navigate('/attendance/editAttendanceRecord/{id}', {id: item.id});
+      navigate('/attendance/editAttendanceRecord/{id}', { id: item.id });
     },
     onClickDeleteSelected() {
       const ids = this.checkedItems.map((index) => {
