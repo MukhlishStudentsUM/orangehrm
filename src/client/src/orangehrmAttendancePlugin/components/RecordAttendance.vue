@@ -21,10 +21,11 @@
 
 <template>
   <oxd-form :loading="isLoading" @submit-valid="onSave">
-    <!-- PREVIOUS PUNCH IN INFORMATION SECTION -->
+    <!-- BAGIAN INFORMASI PUNCH IN SEBELUMNYA -->
     <oxd-form-row v-if="attendanceRecord.previousRecord">
       <!-- DIUBAH: Grid utama diubah menjadi 2 kolom agar sejajar seperti form di bawahnya -->
       <oxd-grid :cols="2" class="orangehrm-full-width-grid">
+
         <!-- KOLOM KIRI: Berisi info Waktu dan Catatan Punch In -->
         <oxd-grid-item>
           <oxd-input-group :label="$t('attendance.punched_in_time')">
@@ -36,8 +37,7 @@
               </oxd-text>
             </oxd-text>
           </oxd-input-group>
-          <br />
-          <!-- Memberi sedikit spasi -->
+          <br> <!-- Memberi sedikit spasi -->
           <oxd-input-group v-if="attendanceRecord.previousRecord.note" :label="$t('attendance.punched_in_note')">
             <oxd-text type="subtitle-2">
               {{ attendanceRecord.previousRecord.note }}
@@ -48,7 +48,8 @@
         <!-- KOLOM KANAN: Berisi Peta Lokasi Punch In -->
         <oxd-grid-item>
           <oxd-input-group :label="$t('Punch In Location')">
-            <div v-if="hasValidPunchInAddress" id="punchInMap" style="height: 200px; width: 100%"></div>
+            <div v-if="hasValidPunchInAddress" id="punchInMap" style="height: 200px; width: 100%; border-radius: 8px;">
+            </div>
             <oxd-text v-else class="orangehrm-map-address orangehrm-map-placeholder">
               Location data not available for this punch in.
             </oxd-text>
@@ -57,17 +58,18 @@
             </oxd-text>
           </oxd-input-group>
         </oxd-grid-item>
+
       </oxd-grid>
     </oxd-form-row>
 
     <oxd-divider v-if="attendanceRecord.previousRecord" />
 
-    <!-- MAIN FORM SECTION (Date, Time, Current Location) -->
+    <!-- BAGIAN FORM UTAMA (TIDAK BERUBAH) -->
     <oxd-form-row>
-      <oxd-grid :cols="4" class="orangehrm-full-width-grid">
-        <oxd-grid-item class="--span-column-2">
+      <oxd-grid :cols="2" class="orangehrm-full-width-grid">
+        <!-- Kolom Kiri: Date, Time, Note -->
+        <oxd-grid-item>
           <oxd-grid :cols="2">
-            <!-- Date, Time, Note fields... -->
             <oxd-grid-item>
               <date-input :key="attendanceRecord.time" v-model="attendanceRecord.date" :label="$t('general.date')"
                 :rules="rules.date" :disabled="!isEditable" required />
@@ -76,22 +78,23 @@
               <oxd-input-field v-model="attendanceRecord.time" :label="$t('general.time')" :disabled="!isEditable"
                 :rules="rules.time" type="time" :placeholder="$t('attendance.hh_mm')" required />
             </oxd-grid-item>
-            <oxd-grid-item v-if="isTimezoneEditable" class="--span-column-2">
+          </oxd-grid>
+          <oxd-grid v-if="isTimezoneEditable" :cols="1">
+            <oxd-grid-item>
               <timezone-dropdown v-model="attendanceRecord.timezone" required />
             </oxd-grid-item>
-            <oxd-grid-item class="--span-column-2">
-              <oxd-input-field v-model="attendanceRecord.note" :rules="rules.note" :label="$t('general.note')"
-                :placeholder="$t('general.type_here')" type="textarea" />
+          </oxd-grid>
+          <oxd-grid :cols="1">
+            <oxd-grid-item>
+              <oxd-input-field style="height: 200px; width: 100%;" v-model="attendanceRecord.note" :rules="rules.note"
+                :label="$t('general.note')" :placeholder="$t('general.type_here')" type="textarea" />
             </oxd-grid-item>
           </oxd-grid>
         </oxd-grid-item>
 
-        <!-- Map for Current Location (Punch Out) -->
-        <oxd-grid-item class="--span-column-2">
-          <oxd-input-group :label="!attendanceRecordId
-            ? $t('general.location')
-            : $t('Punch Out Location (Current)')
-            ">
+        <!-- Kolom Kanan: Peta Punch Out -->
+        <oxd-grid-item>
+          <oxd-input-group :label="!attendanceRecordId ? $t('general.location') : $t('Punch Out Location (Current)')">
             <div id="punchOutMap" style="height: 200px; width: 100%"></div>
             <oxd-text v-if="attendanceRecord.address" type="subtitle-2" class="orangehrm-map-address">
               {{ attendanceRecord.address }}
@@ -104,8 +107,7 @@
     <oxd-divider />
     <oxd-form-actions>
       <required-text />
-      <submit-button :label="!attendanceRecordId ? $t('attendance.in') : $t('attendance.out')
-        " />
+      <submit-button :label="!attendanceRecordId ? $t('attendance.in') : $t('attendance.out')" />
     </oxd-form-actions>
   </oxd-form>
 </template>
@@ -307,51 +309,46 @@ export default {
         document.head.appendChild(script);
       });
     },
+
     displayPunchInLocation() {
-      if (this.punchInMap) return; // Don't re-initialize
+      if (this.punchInMap) return; // Jangan buat peta lagi jika sudah ada
       if (!this.leafletLoaded) return;
 
+      // Alamat punch-in sekarang sudah dalam format yang bersih dari database.
       const punchInAddress = this.attendanceRecord.previousRecord.address;
-      console.log('Attempting to geocode Punch In address:', punchInAddress);
+      if (!punchInAddress) return;
 
-      fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-          punchInAddress,
-        )}&format=json&limit=1`,
-      )
-        .then((response) => response.json())
-        .then((data) => {
+      console.log("Attempting to geocode with clean address from DB:", punchInAddress);
+
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(punchInAddress)}&format=json&limit=1`)
+        .then(response => response.json())
+        .then(data => {
           if (data && data.length > 0) {
             const { lat, lon } = data[0];
             const coords = [parseFloat(lat), parseFloat(lon)];
 
-            // Make sure the div exists before trying to create a map
             const mapContainer = document.getElementById('punchInMap');
             if (mapContainer) {
-              this.punchInMap = window.L.map('punchInMap').setView(coords, 15);
-              window.L.tileLayer(
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              ).addTo(this.punchInMap);
-              window.L.marker(coords)
-                .addTo(this.punchInMap)
-                .bindPopup(`<b>You Punched In Here</b>`)
-                .openPopup();
-              console.log('Punch In map rendered successfully.');
-            } else {
-              console.error(
-                "Punch In map container 'punchInMap' not found in DOM.",
-              );
+              this.punchInMap = window.L.map('punchInMap').setView(coords, 16); // Zoom lebih dekat
+              window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.punchInMap);
+
+              window.L.marker(coords, {
+                icon: new window.L.Icon({
+                  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                  shadowSize: [41, 41]
+                })
+              }).addTo(this.punchInMap).bindPopup(`<b>You Punched In Here</b>`).openPopup();
+
+              console.log("Punch In map rendered successfully with better accuracy.");
             }
           } else {
-            console.error(
-              'Geocoding failed for Punch In: Address not found via API.',
-              punchInAddress,
-            );
+            console.error('Geocoding failed for Punch In: Address not found via API.', punchInAddress);
           }
-        })
-        .catch((error) =>
-          console.error('Error during Punch In Geocoding:', error),
-        );
+        }).catch(error => console.error('Error during Punch In Geocoding:', error));
     },
 
     displayCurrentLocation() {
@@ -370,7 +367,7 @@ export default {
             (position) => {
               const { latitude, longitude } = position.coords;
               const coords = [latitude, longitude];
-              this.punchOutMap.setView(coords, 13);
+              this.punchOutMap.setView(coords, 16);
               window.L.marker(coords)
                 .addTo(this.punchOutMap)
                 .bindPopup('<b>Your Current Location</b>')
@@ -385,14 +382,29 @@ export default {
         }
       }
     },
+
     reverseGeocode(lat, lon) {
-      fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
-      )
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&lat=${lat}&lon=${lon}`)
         .then((response) => response.json())
         .then((data) => {
-          if (data && data.display_name) {
-            this.attendanceRecord.address = data.display_name;
+          if (data && data.address) {
+            const addr = data.address;
+            const cleanAddressParts = [
+              addr.road,
+              addr.neighbourhood,
+              addr.suburb || addr.village,
+              addr.city || addr.town,
+              addr.state,
+              addr.country
+            ];
+
+            // Filter bagian yang kosong (undefined) dan gabungkan dengan koma.
+            this.attendanceRecord.address = cleanAddressParts.filter(part => part).join(', ');
+            console.log("Generated clean address to save:", this.attendanceRecord.address);
+            // =========================================================
+
+          } else if (data && data.display_name) {
+            this.attendanceRecord.address = data.display_name; // Fallback jika tidak ada detail
           } else {
             this.attendanceRecord.address = 'Address not found';
           }
