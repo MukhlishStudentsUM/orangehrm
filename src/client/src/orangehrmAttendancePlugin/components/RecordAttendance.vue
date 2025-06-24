@@ -31,20 +31,14 @@
             <oxd-text type="subtitle-2">
               {{ previousAttendanceRecordDate }} -
               {{ previousAttendanceRecordTime }}
-              <oxd-text
-                tag="span"
-                class="orangehrm-attendance-punchedIn-timezone"
-              >
+              <oxd-text tag="span" class="orangehrm-attendance-punchedIn-timezone">
                 {{ `(GMT ${previousRecordTimezone})` }}
               </oxd-text>
             </oxd-text>
           </oxd-input-group>
           <br />
           <!-- Memberi sedikit spasi -->
-          <oxd-input-group
-            v-if="attendanceRecord.previousRecord.note"
-            :label="$t('attendance.punched_in_note')"
-          >
+          <oxd-input-group v-if="attendanceRecord.previousRecord.note" :label="$t('attendance.punched_in_note')">
             <oxd-text type="subtitle-2">
               {{ attendanceRecord.previousRecord.note }}
             </oxd-text>
@@ -54,22 +48,11 @@
         <!-- KOLOM KANAN: Berisi Peta Lokasi Punch In -->
         <oxd-grid-item>
           <oxd-input-group :label="$t('Punch In Location')">
-            <div
-              v-if="hasValidPunchInAddress"
-              id="punchInMap"
-              style="height: 200px; width: 100%"
-            ></div>
-            <oxd-text
-              v-else
-              class="orangehrm-map-address orangehrm-map-placeholder"
-            >
+            <div v-if="hasValidPunchInAddress" id="punchInMap" style="height: 200px; width: 100%"></div>
+            <oxd-text v-else class="orangehrm-map-address orangehrm-map-placeholder">
               Location data not available for this punch in.
             </oxd-text>
-            <oxd-text
-              v-if="attendanceRecord.previousRecord.address"
-              type="subtitle-2"
-              class="orangehrm-map-address"
-            >
+            <oxd-text v-if="attendanceRecord.previousRecord.address" type="subtitle-2" class="orangehrm-map-address">
               {{ attendanceRecord.previousRecord.address }}
             </oxd-text>
           </oxd-input-group>
@@ -86,56 +69,31 @@
           <oxd-grid :cols="2">
             <!-- Date, Time, Note fields... -->
             <oxd-grid-item>
-              <date-input
-                :key="attendanceRecord.time"
-                v-model="attendanceRecord.date"
-                :label="$t('general.date')"
-                :rules="rules.date"
-                :disabled="!isEditable"
-                required
-              />
+              <date-input :key="attendanceRecord.time" v-model="attendanceRecord.date" :label="$t('general.date')"
+                :rules="rules.date" :disabled="!isEditable" required />
             </oxd-grid-item>
             <oxd-grid-item>
-              <oxd-input-field
-                v-model="attendanceRecord.time"
-                :label="$t('general.time')"
-                :disabled="!isEditable"
-                :rules="rules.time"
-                type="time"
-                :placeholder="$t('attendance.hh_mm')"
-                required
-              />
+              <oxd-input-field v-model="attendanceRecord.time" :label="$t('general.time')" :disabled="!isEditable"
+                :rules="rules.time" type="time" :placeholder="$t('attendance.hh_mm')" required />
             </oxd-grid-item>
             <oxd-grid-item v-if="isTimezoneEditable" class="--span-column-2">
               <timezone-dropdown v-model="attendanceRecord.timezone" required />
             </oxd-grid-item>
             <oxd-grid-item class="--span-column-2">
-              <oxd-input-field
-                v-model="attendanceRecord.note"
-                :rules="rules.note"
-                :label="$t('general.note')"
-                :placeholder="$t('general.type_here')"
-                type="textarea"
-              />
+              <oxd-input-field v-model="attendanceRecord.note" :rules="rules.note" :label="$t('general.note')"
+                :placeholder="$t('general.type_here')" type="textarea" />
             </oxd-grid-item>
           </oxd-grid>
         </oxd-grid-item>
 
         <!-- Map for Current Location (Punch Out) -->
         <oxd-grid-item class="--span-column-2">
-          <oxd-input-group
-            :label="
-              !attendanceRecordId
-                ? $t('general.location')
-                : $t('Punch Out Location (Current)')
-            "
-          >
+          <oxd-input-group :label="!attendanceRecordId
+            ? $t('general.location')
+            : $t('Punch Out Location (Current)')
+            ">
             <div id="punchOutMap" style="height: 200px; width: 100%"></div>
-            <oxd-text
-              v-if="attendanceRecord.address"
-              type="subtitle-2"
-              class="orangehrm-map-address"
-            >
+            <oxd-text v-if="attendanceRecord.address" type="subtitle-2" class="orangehrm-map-address">
               {{ attendanceRecord.address }}
             </oxd-text>
           </oxd-input-group>
@@ -146,11 +104,8 @@
     <oxd-divider />
     <oxd-form-actions>
       <required-text />
-      <submit-button
-        :label="
-          !attendanceRecordId ? $t('attendance.in') : $t('attendance.out')
-        "
-      />
+      <submit-button :label="!attendanceRecordId ? $t('attendance.in') : $t('attendance.out')
+        " />
     </oxd-form-actions>
   </oxd-form>
 </template>
@@ -170,11 +125,11 @@ import {
   setClockInterval,
   getStandardTimezone,
 } from '@/core/util/helper/datefns';
-import {promiseDebounce} from '@ohrm/oxd';
+import { promiseDebounce } from '@ohrm/oxd';
 import useLocale from '@/core/util/composable/useLocale';
-import {APIService} from '@ohrm/core/util/services/api.service';
+import { APIService } from '@ohrm/core/util/services/api.service';
 import useDateFormat from '@/core/util/composable/useDateFormat';
-import {reloadPage, navigate} from '@/core/util/helper/navigation';
+import { reloadPage, navigate } from '@/core/util/helper/navigation';
 import TimezoneDropdown from '@/orangehrmAttendancePlugin/components/TimezoneDropdown.vue';
 
 const attendanceRecordModal = {
@@ -192,20 +147,20 @@ export default {
     'timezone-dropdown': TimezoneDropdown,
   },
   props: {
-    isEditable: {type: Boolean, default: false},
-    isTimezoneEditable: {type: Boolean, default: false},
-    attendanceRecordId: {type: Number, default: null},
-    employeeId: {type: Number, default: null},
-    date: {type: String, default: null},
+    isEditable: { type: Boolean, default: false },
+    isTimezoneEditable: { type: Boolean, default: false },
+    attendanceRecordId: { type: Number, default: null },
+    employeeId: { type: Number, default: null },
+    date: { type: String, default: null },
   },
   setup(props) {
     const apiPath = props.employeeId
       ? `/api/v2/attendance/employees/${props.employeeId}/records`
       : '/api/v2/attendance/records';
     const http = new APIService(window.appGlobal.baseUrl, apiPath);
-    const {jsDateFormat, userDateFormat, timeFormat, jsTimeFormat} =
+    const { jsDateFormat, userDateFormat, timeFormat, jsTimeFormat } =
       useDateFormat();
-    const {locale} = useLocale();
+    const { locale } = useLocale();
     return {
       http,
       locale,
@@ -218,7 +173,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      attendanceRecord: {...attendanceRecordModal},
+      attendanceRecord: { ...attendanceRecordModal },
       rules: {
         date: [
           required,
@@ -240,7 +195,7 @@ export default {
       return formatDate(
         parseDate(this.attendanceRecord.previousRecord.userDate),
         this.jsDateFormat,
-        {locale: this.locale},
+        { locale: this.locale },
       );
     },
     previousAttendanceRecordTime() {
@@ -311,12 +266,12 @@ export default {
           url = `/api/v2/attendance/records/latest?empNumber=${this.employeeId}`;
         }
         return this.attendanceRecordId
-          ? this.http.request({method: 'GET', url})
+          ? this.http.request({ method: 'GET', url })
           : null;
       })
       .then((response) => {
         if (response) {
-          const {data} = response.data;
+          const { data } = response.data;
           this.attendanceRecord.previousRecord = data.punchIn;
         }
       })
@@ -367,7 +322,7 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           if (data && data.length > 0) {
-            const {lat, lon} = data[0];
+            const { lat, lon } = data[0];
             const coords = [parseFloat(lat), parseFloat(lon)];
 
             // Make sure the div exists before trying to create a map
@@ -413,7 +368,7 @@ export default {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              const {latitude, longitude} = position.coords;
+              const { latitude, longitude } = position.coords;
               const coords = [latitude, longitude];
               this.punchOutMap.setView(coords, 13);
               window.L.marker(coords)
@@ -468,9 +423,9 @@ export default {
         .then(() => {
           this.employeeId
             ? navigate('/attendance/viewAttendanceRecord', undefined, {
-                employeeId: this.employeeId,
-                date: this.date,
-              })
+              employeeId: this.employeeId,
+              date: this.date,
+            })
             : reloadPage();
         });
     },
@@ -478,9 +433,9 @@ export default {
     setCurrentDateTime() {
       return new Promise((resolve, reject) => {
         this.http
-          .request({method: 'GET', url: '/api/v2/attendance/current-datetime'})
+          .request({ method: 'GET', url: '/api/v2/attendance/current-datetime' })
           .then((res) => {
-            const {utcDate, utcTime} = res.data.data;
+            const { utcDate, utcTime } = res.data.data;
             const currentDate = parseDate(
               `${utcDate} ${utcTime} +00:00`,
               'yyyy-MM-dd HH:mm xxx',
@@ -506,9 +461,8 @@ export default {
         this.http
           .request({
             method: 'GET',
-            url: `/api/v2/attendance/${
-              this.attendanceRecordId ? 'punch-out' : 'punch-in'
-            }/overlaps`,
+            url: `/api/v2/attendance/${this.attendanceRecordId ? 'punch-out' : 'punch-in'
+              }/overlaps`,
             params: {
               date: this.attendanceRecord.date,
               time: this.attendanceRecord.time,
@@ -520,7 +474,7 @@ export default {
               (status >= 200 && status < 300) || status == 400,
           })
           .then((res) => {
-            const {data, error} = res.data;
+            const { data, error } = res.data;
             if (error) {
               return resolve(error.message);
             }
