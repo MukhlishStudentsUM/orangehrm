@@ -276,7 +276,7 @@ export default {
           slot: 'title',
           cellType: 'oxd-table-cell-truncate',
           title: this.$t('Punch In Address'),
-          style: { flex: 1 },
+          style: {flex: 1},
         },
         {
           name: 'punchInNote',
@@ -297,7 +297,7 @@ export default {
           slot: 'title',
           cellType: 'oxd-table-cell-truncate',
           title: this.$t('Punch Out Address'),
-          style: { flex: 1 },
+          style: {flex: 1},
         },
         {
           name: 'punchOutNote',

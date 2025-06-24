@@ -19,65 +19,61 @@
 
 <template>
   <oxd-form :loading="isLoading" @submit-valid="onSave">
-    <oxd-form-row>
+    <oxd-form-row v-if="attendanceRecord.previousRecord">
       <oxd-grid :cols="4" class="orangehrm-full-width-grid">
-        <template v-if="attendanceRecord.previousRecord">
-          <oxd-grid-item :class="
-              !attendanceRecord.previousRecord.note ? '--span-column-2' : ''
-  ">
-            <oxd-input-group :label="$t('attendance.punched_in_time')">
-              <oxd-text type="subtitle-2">
-                {{ previousAttendanceRecordDate }} -
-                {{ previousAttendanceRecordTime }}
-                <oxd-text tag="span" class="orangehrm-attendance-punchedIn-timezone">
-                  {{ `(GMT ${previousRecordTimezone})` }}
-                </oxd-text>
+        <oxd-grid-item :class="!attendanceRecord.previousRecord.note ? '--span-column-2' : ''">
+          <oxd-input-group :label="$t('attendance.punched_in_time')">
+            <oxd-text type="subtitle-2">
+              {{ previousAttendanceRecordDate }} -
+              {{ previousAttendanceRecordTime }}
+              <oxd-text tag="span" class="orangehrm-attendance-punchedIn-timezone">
+                {{ `(GMT ${previousRecordTimezone})` }}
               </oxd-text>
-            </oxd-input-group>
-          </oxd-grid-item>
-
-          <oxd-grid-item v-if="attendanceRecord.previousRecord.note">
-            <oxd-input-group :label="$t('attendance.punched_in_note')">
-              <oxd-text type="subtitle-2">
-                {{ attendanceRecord.previousRecord.note }}
-              </oxd-text>
-            </oxd-input-group>
-          </oxd-grid-item>
-        </template>
-
-        <oxd-grid-item class="--offset-row-2">
-          <date-input :key="attendanceRecord.time" v-model="attendanceRecord.date" :label="$t('general.date')"
-            :rules="rules.date" :disabled="!isEditable" required />
+            </oxd-text>
+          </oxd-input-group>
         </oxd-grid-item>
-
-        <oxd-grid-item class="--offset-row-2">
-          <oxd-input-field v-model="attendanceRecord.time" :label="$t('general.time')" :disabled="!isEditable"
-            :rules="rules.time" type="time" :placeholder="$t('attendance.hh_mm')" required />
+        <oxd-grid-item v-if="attendanceRecord.previousRecord.note">
+          <oxd-input-group :label="$t('attendance.punched_in_note')">
+            <oxd-text type="subtitle-2">
+              {{ attendanceRecord.previousRecord.note }}
+            </oxd-text>
+          </oxd-input-group>
         </oxd-grid-item>
       </oxd-grid>
     </oxd-form-row>
 
-    <oxd-grid v-if="isTimezoneEditable" :cols="2">
-      <oxd-grid-item>
-        <timezone-dropdown v-model="attendanceRecord.timezone" required />
-      </oxd-grid-item>
-    </oxd-grid>
-
+    <!-- Date -->
     <oxd-form-row>
       <oxd-grid :cols="4" class="orangehrm-full-width-grid">
         <oxd-grid-item class="--span-column-2">
-          <oxd-input-field v-model="attendanceRecord.note" :rules="rules.note" :label="$t('general.note')"
-            :placeholder="$t('general.type_here')" type="textarea" />
-        </oxd-grid-item>
-      </oxd-grid>
-    </oxd-form-row>
+          <oxd-grid :cols="2">
+            <oxd-grid-item>
+              <date-input :key="attendanceRecord.time" v-model="attendanceRecord.date" :label="$t('general.date')"
+                :rules="rules.date" :disabled="!isEditable" required />
+            </oxd-grid-item>
 
-    <oxd-form-row>
-      <oxd-grid :cols="4" class="orangehrm-full-width-grid">
+            <!-- Time -->
+            <oxd-grid-item>
+              <oxd-input-field v-model="attendanceRecord.time" :label="$t('general.time')" :disabled="!isEditable"
+                :rules="rules.time" type="time" :placeholder="$t('attendance.hh_mm')" required />
+            </oxd-grid-item>
+
+            <oxd-grid-item v-if="isTimezoneEditable" class="--span-column-2">
+              <timezone-dropdown v-model="attendanceRecord.timezone" required />
+            </oxd-grid-item>
+
+            <!-- Note -->
+            <oxd-grid-item class="--span-column-2">
+              <oxd-input-field style="height: 200px; width: 100%;" v-model="attendanceRecord.note" :rules="rules.note"
+                :label="$t('general.note')" :placeholder="$t('general.type_here')" type="textarea" />
+            </oxd-grid-item>
+          </oxd-grid>
+        </oxd-grid-item>
+
+        <!-- Location -->
         <oxd-grid-item class="--span-column-2">
           <oxd-input-group :label="$t('general.location')">
             <div id="map" style="height: 300px; width: 100%"></div>
-            <oxd-text type="subtitle-2"></oxd-text>
             <oxd-text v-if="
               attendanceRecord.address &&
               ![
@@ -93,12 +89,9 @@
             </oxd-text>
           </oxd-input-group>
         </oxd-grid-item>
-        <oxd-grid-item class="--span-column-2">
-          <oxd-input-field v-model="attendanceRecord.address" :placeholder="$t('general.address')" type="text"
-            readonly />
-        </oxd-grid-item>
       </oxd-grid>
     </oxd-form-row>
+
     <oxd-divider />
     <oxd-form-actions>
       <required-text />
@@ -380,18 +373,18 @@ export default {
         .then(() => {
           this.employeeId
             ? navigate('/attendance/viewAttendanceRecord', undefined, {
-                employeeId: this.employeeId,
-                date: this.date,
-              })
+              employeeId: this.employeeId,
+              date: this.date,
+            })
             : reloadPage();
         });
     },
     setCurrentDateTime() {
       return new Promise((resolve, reject) => {
         this.http
-          .request({method: 'GET', url: '/api/v2/attendance/current-datetime'})
+          .request({ method: 'GET', url: '/api/v2/attendance/current-datetime' })
           .then((res) => {
-            const {utcDate, utcTime} = res.data.data;
+            const { utcDate, utcTime } = res.data.data;
             // PERUBAHAN: Menggunakan backtick untuk template literal
             const currentDate = parseDate(
               `${utcDate} ${utcTime} +00:00`,
@@ -417,9 +410,8 @@ export default {
         this.http
           .request({
             method: 'GET',
-            url: `/api/v2/attendance/${
-              this.attendanceRecordId ? 'punch-out' : 'punch-in'
-            }/overlaps`,
+            url: `/api/v2/attendance/${this.attendanceRecordId ? 'punch-out' : 'punch-in'
+              }/overlaps`,
             params: {
               date: this.attendanceRecord.date,
               time: this.attendanceRecord.time,
@@ -433,7 +425,7 @@ export default {
             },
           })
           .then((res) => {
-            const {data, error} = res.data;
+            const { data, error } = res.data;
             if (error) {
               return resolve(error.message);
             }
