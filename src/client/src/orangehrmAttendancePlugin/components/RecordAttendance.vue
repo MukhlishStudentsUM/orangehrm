@@ -25,20 +25,26 @@
     <oxd-form-row v-if="attendanceRecord.previousRecord">
       <!-- DIUBAH: Grid utama diubah menjadi 2 kolom agar sejajar seperti form di bawahnya -->
       <oxd-grid :cols="2" class="orangehrm-full-width-grid">
-
         <!-- KOLOM KIRI: Berisi info Waktu dan Catatan Punch In -->
         <oxd-grid-item>
           <oxd-input-group :label="$t('attendance.punched_in_time')">
             <oxd-text type="subtitle-2">
               {{ previousAttendanceRecordDate }} -
               {{ previousAttendanceRecordTime }}
-              <oxd-text tag="span" class="orangehrm-attendance-punchedIn-timezone">
+              <oxd-text
+                tag="span"
+                class="orangehrm-attendance-punchedIn-timezone"
+              >
                 {{ `(GMT ${previousRecordTimezone})` }}
               </oxd-text>
             </oxd-text>
           </oxd-input-group>
-          <br> <!-- Memberi sedikit spasi -->
-          <oxd-input-group v-if="attendanceRecord.previousRecord.note" :label="$t('attendance.punched_in_note')">
+          <br />
+          <!-- Memberi sedikit spasi -->
+          <oxd-input-group
+            v-if="attendanceRecord.previousRecord.note"
+            :label="$t('attendance.punched_in_note')"
+          >
             <oxd-text type="subtitle-2">
               {{ attendanceRecord.previousRecord.note }}
             </oxd-text>
@@ -48,17 +54,26 @@
         <!-- KOLOM KANAN: Berisi Peta Lokasi Punch In -->
         <oxd-grid-item>
           <oxd-input-group :label="$t('Punch In Location')">
-            <div v-if="hasValidPunchInAddress" id="punchInMap" style="height: 200px; width: 100%; border-radius: 8px;">
-            </div>
-            <oxd-text v-else class="orangehrm-map-address orangehrm-map-placeholder">
+            <div
+              v-if="hasValidPunchInAddress"
+              id="punchInMap"
+              style="height: 200px; width: 100%; border-radius: 8px"
+            ></div>
+            <oxd-text
+              v-else
+              class="orangehrm-map-address orangehrm-map-placeholder"
+            >
               Location data not available for this punch in.
             </oxd-text>
-            <oxd-text v-if="attendanceRecord.previousRecord.address" type="subtitle-2" class="orangehrm-map-address">
+            <oxd-text
+              v-if="attendanceRecord.previousRecord.address"
+              type="subtitle-2"
+              class="orangehrm-map-address"
+            >
               {{ attendanceRecord.previousRecord.address }}
             </oxd-text>
           </oxd-input-group>
         </oxd-grid-item>
-
       </oxd-grid>
     </oxd-form-row>
 
@@ -71,12 +86,25 @@
         <oxd-grid-item>
           <oxd-grid :cols="2">
             <oxd-grid-item>
-              <date-input :key="attendanceRecord.time" v-model="attendanceRecord.date" :label="$t('general.date')"
-                :rules="rules.date" :disabled="!isEditable" required />
+              <date-input
+                :key="attendanceRecord.time"
+                v-model="attendanceRecord.date"
+                :label="$t('general.date')"
+                :rules="rules.date"
+                :disabled="!isEditable"
+                required
+              />
             </oxd-grid-item>
             <oxd-grid-item>
-              <oxd-input-field v-model="attendanceRecord.time" :label="$t('general.time')" :disabled="!isEditable"
-                :rules="rules.time" type="time" :placeholder="$t('attendance.hh_mm')" required />
+              <oxd-input-field
+                v-model="attendanceRecord.time"
+                :label="$t('general.time')"
+                :disabled="!isEditable"
+                :rules="rules.time"
+                type="time"
+                :placeholder="$t('attendance.hh_mm')"
+                required
+              />
             </oxd-grid-item>
           </oxd-grid>
           <oxd-grid v-if="isTimezoneEditable" :cols="1">
@@ -86,17 +114,32 @@
           </oxd-grid>
           <oxd-grid :cols="1">
             <oxd-grid-item>
-              <oxd-input-field style="height: 200px; width: 100%;" v-model="attendanceRecord.note" :rules="rules.note"
-                :label="$t('general.note')" :placeholder="$t('general.type_here')" type="textarea" />
+              <oxd-input-field
+                v-model="attendanceRecord.note"
+                :rules="rules.note"
+                :label="$t('general.note')"
+                :placeholder="$t('general.type_here')"
+                type="textarea"
+              />
             </oxd-grid-item>
           </oxd-grid>
         </oxd-grid-item>
 
         <!-- Kolom Kanan: Peta Punch Out -->
         <oxd-grid-item>
-          <oxd-input-group :label="!attendanceRecordId ? $t('general.location') : $t('Punch Out Location (Current)')">
+          <oxd-input-group
+            :label="
+              !attendanceRecordId
+                ? $t('general.location')
+                : $t('Punch Out Location (Current)')
+            "
+          >
             <div id="punchOutMap" style="height: 200px; width: 100%"></div>
-            <oxd-text v-if="attendanceRecord.address" type="subtitle-2" class="orangehrm-map-address">
+            <oxd-text
+              v-if="attendanceRecord.address"
+              type="subtitle-2"
+              class="orangehrm-map-address"
+            >
               {{ attendanceRecord.address }}
             </oxd-text>
           </oxd-input-group>
@@ -107,7 +150,11 @@
     <oxd-divider />
     <oxd-form-actions>
       <required-text />
-      <submit-button :label="!attendanceRecordId ? $t('attendance.in') : $t('attendance.out')" />
+      <submit-button
+        :label="
+          !attendanceRecordId ? $t('attendance.in') : $t('attendance.out')
+        "
+      />
     </oxd-form-actions>
   </oxd-form>
 </template>
@@ -127,11 +174,11 @@ import {
   setClockInterval,
   getStandardTimezone,
 } from '@/core/util/helper/datefns';
-import { promiseDebounce } from '@ohrm/oxd';
+import {promiseDebounce} from '@ohrm/oxd';
 import useLocale from '@/core/util/composable/useLocale';
-import { APIService } from '@ohrm/core/util/services/api.service';
+import {APIService} from '@ohrm/core/util/services/api.service';
 import useDateFormat from '@/core/util/composable/useDateFormat';
-import { reloadPage, navigate } from '@/core/util/helper/navigation';
+import {reloadPage, navigate} from '@/core/util/helper/navigation';
 import TimezoneDropdown from '@/orangehrmAttendancePlugin/components/TimezoneDropdown.vue';
 
 const attendanceRecordModal = {
@@ -149,20 +196,20 @@ export default {
     'timezone-dropdown': TimezoneDropdown,
   },
   props: {
-    isEditable: { type: Boolean, default: false },
-    isTimezoneEditable: { type: Boolean, default: false },
-    attendanceRecordId: { type: Number, default: null },
-    employeeId: { type: Number, default: null },
-    date: { type: String, default: null },
+    isEditable: {type: Boolean, default: false},
+    isTimezoneEditable: {type: Boolean, default: false},
+    attendanceRecordId: {type: Number, default: null},
+    employeeId: {type: Number, default: null},
+    date: {type: String, default: null},
   },
   setup(props) {
     const apiPath = props.employeeId
       ? `/api/v2/attendance/employees/${props.employeeId}/records`
       : '/api/v2/attendance/records';
     const http = new APIService(window.appGlobal.baseUrl, apiPath);
-    const { jsDateFormat, userDateFormat, timeFormat, jsTimeFormat } =
+    const {jsDateFormat, userDateFormat, timeFormat, jsTimeFormat} =
       useDateFormat();
-    const { locale } = useLocale();
+    const {locale} = useLocale();
     return {
       http,
       locale,
@@ -175,7 +222,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      attendanceRecord: { ...attendanceRecordModal },
+      attendanceRecord: {...attendanceRecordModal},
       rules: {
         date: [
           required,
@@ -197,7 +244,7 @@ export default {
       return formatDate(
         parseDate(this.attendanceRecord.previousRecord.userDate),
         this.jsDateFormat,
-        { locale: this.locale },
+        {locale: this.locale},
       );
     },
     previousAttendanceRecordTime() {
@@ -268,12 +315,12 @@ export default {
           url = `/api/v2/attendance/records/latest?empNumber=${this.employeeId}`;
         }
         return this.attendanceRecordId
-          ? this.http.request({ method: 'GET', url })
+          ? this.http.request({method: 'GET', url})
           : null;
       })
       .then((response) => {
         if (response) {
-          const { data } = response.data;
+          const {data} = response.data;
           this.attendanceRecord.previousRecord = data.punchIn;
         }
       })
@@ -318,37 +365,59 @@ export default {
       const punchInAddress = this.attendanceRecord.previousRecord.address;
       if (!punchInAddress) return;
 
-      console.log("Attempting to geocode with clean address from DB:", punchInAddress);
+      console.log(
+        'Attempting to geocode with clean address from DB:',
+        punchInAddress,
+      );
 
-      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(punchInAddress)}&format=json&limit=1`)
-        .then(response => response.json())
-        .then(data => {
+      fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          punchInAddress,
+        )}&format=json&limit=1`,
+      )
+        .then((response) => response.json())
+        .then((data) => {
           if (data && data.length > 0) {
-            const { lat, lon } = data[0];
+            const {lat, lon} = data[0];
             const coords = [parseFloat(lat), parseFloat(lon)];
 
             const mapContainer = document.getElementById('punchInMap');
             if (mapContainer) {
               this.punchInMap = window.L.map('punchInMap').setView(coords, 16); // Zoom lebih dekat
-              window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.punchInMap);
+              window.L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              ).addTo(this.punchInMap);
 
               window.L.marker(coords, {
                 icon: new window.L.Icon({
-                  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                  iconUrl:
+                    'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                  shadowUrl:
+                    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
                   iconSize: [25, 41],
                   iconAnchor: [12, 41],
                   popupAnchor: [1, -34],
-                  shadowSize: [41, 41]
-                })
-              }).addTo(this.punchInMap).bindPopup(`<b>You Punched In Here</b>`).openPopup();
+                  shadowSize: [41, 41],
+                }),
+              })
+                .addTo(this.punchInMap)
+                .bindPopup(`<b>You Punched In Here</b>`)
+                .openPopup();
 
-              console.log("Punch In map rendered successfully with better accuracy.");
+              console.log(
+                'Punch In map rendered successfully with better accuracy.',
+              );
             }
           } else {
-            console.error('Geocoding failed for Punch In: Address not found via API.', punchInAddress);
+            console.error(
+              'Geocoding failed for Punch In: Address not found via API.',
+              punchInAddress,
+            );
           }
-        }).catch(error => console.error('Error during Punch In Geocoding:', error));
+        })
+        .catch((error) =>
+          console.error('Error during Punch In Geocoding:', error),
+        );
     },
 
     displayCurrentLocation() {
@@ -365,7 +434,7 @@ export default {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              const { latitude, longitude } = position.coords;
+              const {latitude, longitude} = position.coords;
               const coords = [latitude, longitude];
               this.punchOutMap.setView(coords, 16);
               window.L.marker(coords)
@@ -384,7 +453,9 @@ export default {
     },
 
     reverseGeocode(lat, lon) {
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&lat=${lat}&lon=${lon}`)
+      fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&lat=${lat}&lon=${lon}`,
+      )
         .then((response) => response.json())
         .then((data) => {
           if (data && data.address) {
@@ -395,14 +466,18 @@ export default {
               addr.suburb || addr.village,
               addr.city || addr.town,
               addr.state,
-              addr.country
+              addr.country,
             ];
 
             // Filter bagian yang kosong (undefined) dan gabungkan dengan koma.
-            this.attendanceRecord.address = cleanAddressParts.filter(part => part).join(', ');
-            console.log("Generated clean address to save:", this.attendanceRecord.address);
+            this.attendanceRecord.address = cleanAddressParts
+              .filter((part) => part)
+              .join(', ');
+            console.log(
+              'Generated clean address to save:',
+              this.attendanceRecord.address,
+            );
             // =========================================================
-
           } else if (data && data.display_name) {
             this.attendanceRecord.address = data.display_name; // Fallback jika tidak ada detail
           } else {
@@ -435,9 +510,9 @@ export default {
         .then(() => {
           this.employeeId
             ? navigate('/attendance/viewAttendanceRecord', undefined, {
-              employeeId: this.employeeId,
-              date: this.date,
-            })
+                employeeId: this.employeeId,
+                date: this.date,
+              })
             : reloadPage();
         });
     },
@@ -445,9 +520,9 @@ export default {
     setCurrentDateTime() {
       return new Promise((resolve, reject) => {
         this.http
-          .request({ method: 'GET', url: '/api/v2/attendance/current-datetime' })
+          .request({method: 'GET', url: '/api/v2/attendance/current-datetime'})
           .then((res) => {
-            const { utcDate, utcTime } = res.data.data;
+            const {utcDate, utcTime} = res.data.data;
             const currentDate = parseDate(
               `${utcDate} ${utcTime} +00:00`,
               'yyyy-MM-dd HH:mm xxx',
@@ -473,8 +548,9 @@ export default {
         this.http
           .request({
             method: 'GET',
-            url: `/api/v2/attendance/${this.attendanceRecordId ? 'punch-out' : 'punch-in'
-              }/overlaps`,
+            url: `/api/v2/attendance/${
+              this.attendanceRecordId ? 'punch-out' : 'punch-in'
+            }/overlaps`,
             params: {
               date: this.attendanceRecord.date,
               time: this.attendanceRecord.time,
@@ -486,7 +562,7 @@ export default {
               (status >= 200 && status < 300) || status == 400,
           })
           .then((res) => {
-            const { data, error } = res.data;
+            const {data, error} = res.data;
             if (error) {
               return resolve(error.message);
             }
