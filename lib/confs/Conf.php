@@ -30,12 +30,12 @@ class Conf
         $this->dbPort = '3306';
         if (defined('ENVIRONMENT') && ENVIRONMENT == 'test') {
             $prefix = defined('TEST_DB_PREFIX') ? TEST_DB_PREFIX : '';
-            $this->dbName = $prefix . 'test_orangehrm';
+            $this->dbName = $prefix . 'test_algostudio';
         } else {
-            $this->dbName = 'orangehrm';
+            $this->dbName = 'algostudio';
         }
         $this->dbUser = 'root';
-        $this->dbPass = '';
+        $this->dbPass = 'root';
     }
 
     /**
