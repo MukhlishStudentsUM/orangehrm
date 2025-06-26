@@ -51,17 +51,16 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
     use UserRoleManagerTrait;
     use DateTimeHelperTrait;
 
-    // PENAMBAHAN: Konstanta baru untuk parameter alamat punch in dan punch out
     public const PARAMETER_PUNCH_IN_DATE = 'punchInDate';
     public const PARAMETER_PUNCH_IN_TIME = 'punchInTime';
     public const PARAMETER_PUNCH_IN_NOTE = 'punchInNote';
-    public const PARAMETER_PUNCH_IN_ADDRESS = 'punchInAddress'; // BARU
+    public const PARAMETER_PUNCH_IN_ADDRESS = 'punchInAddress';
     public const PARAMETER_PUNCH_IN_OFFSET = 'punchInOffset';
     public const PARAMETER_PUNCH_IN_TIMEZONE_NAME = 'punchInTimezoneName';
     public const PARAMETER_PUNCH_OUT_DATE = 'punchOutDate';
     public const PARAMETER_PUNCH_OUT_TIME = 'punchOutTime';
     public const PARAMETER_PUNCH_OUT_NOTE = 'punchOutNote';
-    public const PARAMETER_PUNCH_OUT_ADDRESS = 'punchOutAddress'; // BARU
+    public const PARAMETER_PUNCH_OUT_ADDRESS = 'punchOutAddress';
     public const PARAMETER_PUNCH_OUT_OFFSET = 'punchOutOffset';
     public const PARAMETER_PUNCH_OUT_TIMEZONE_NAME = 'punchOutTimezoneName';
 
@@ -141,14 +140,12 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
      * @OA\Property(property="punchInTime", type="string"),
      * @OA\Property(property="punchInOffset", type="number"),
      * @OA\Property(property="punchInTimezoneName", type="string"),
-     * // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'punchInAddress'
      * @OA\Property(property="punchInAddress", type="string"),
      * @OA\Property(property="punchOutDate", type="string", format="date"),
      * @OA\Property(property="punchOutTime", type="string"),
      * @OA\Property(property="punchOutOffset", type="number"),
      * @OA\Property(property="punchOutTimezoneName", type="string"),
      * @OA\Property(property="punchOutNote", type="string"),
-     * // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'punchOutAddress'
      * @OA\Property(property="punchOutAddress", type="string"),
      * required={"date", "name", "time", "timezoneOffset", "timezoneName"}
      * )
@@ -217,13 +214,9 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
         $attendanceRecordOwnedEmpNumber = $attendanceRecord->getEmployee()->getEmpNumber();
         $loggedInUserEmpNumber = $this->getAuthUser()->getEmpNumber();
         $rolesToInclude = [];
-        //check the configuration as ESS since Admin user is always allowed to update
         if ($attendanceRecordOwnedEmpNumber === $loggedInUserEmpNumber) {
             $rolesToInclude = ['ESS'];
         }
-        //If edit own attendance record, get the allowed actions list as an ESS user
-        //If edit for someone, get the allowed actions list as a Supervisor
-        //Admin is always allowed to edit others records
         $allowedWorkflowItems = $this->getUserRoleManager()->getAllowedActions(
             WorkflowStateMachine::FLOW_ATTENDANCE,
             $attendanceRecord->getState(),
@@ -234,7 +227,6 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
         $workflowItem = $attendanceRecord->getState() === AttendanceRecord::STATE_PUNCHED_IN ?
             WorkflowStateMachine::ATTENDANCE_ACTION_EDIT_PUNCH_IN_TIME :
             WorkflowStateMachine::ATTENDANCE_ACTION_EDIT_PUNCH_OUT_TIME;
-        //check whether work flow item allowed for the user
         if (!in_array($workflowItem, array_keys($allowedWorkflowItems))) {
             return false;
         }
@@ -253,13 +245,13 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 $punchInOffset,
                 $punchInTimezoneName,
                 $punchInNote,
-                $punchInAddress, // PENAMBAHAN: Variabel untuk menyimpan alamat punch in dari request body
+                $punchInAddress,
                 $punchOutDate,
                 $punchOutTime,
                 $punchOutOffset,
                 $punchOutTimezoneName,
                 $punchOutNote,
-                $punchOutAddress, // PENAMBAHAN: Variabel untuk menyimpan alamat punch out dari request body
+                $punchOutAddress,
             ) = $this->getRequestBodyParams();
 
             $recordId = $attendanceRecord->getId();
@@ -273,7 +265,6 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
             $punchInUTCDateTime = (clone $punchInDateTime)->setTimezone(
                 new DateTimeZone(DateTimeHelperService::TIMEZONE_UTC)
             );
-            //current state is punched in and editing it
             if ($attendanceRecord->getState() === AttendanceRecord::STATE_PUNCHED_IN) {
                 $overlappingAttendanceRecords = $this->getAttendanceService()
                     ->getAttendanceDao()
@@ -285,16 +276,15 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 if ($overlappingAttendanceRecords) {
                     throw AttendanceServiceException::punchInOverlapFound();
                 }
-                //if there are no overlaps
                 $attendanceRecord->setPunchInUserTime($punchInDateTime);
                 $attendanceRecord->setPunchInUtcTime($punchInUTCDateTime);
                 $attendanceRecord->setPunchInNote($punchInNote);
-                $attendanceRecord->setPunchInAddress($punchInAddress); // PENAMBAHAN: Mengatur alamat punch in ke entitas
+                $attendanceRecord->setPunchInAddress($punchInAddress);
                 if ($this->isAllowedToEditTimezone($punchInOffset, $punchInTimezoneName)) {
                     $attendanceRecord->setPunchInTimeOffset($punchInOffset);
                     $attendanceRecord->setPunchInTimezoneName($punchInTimezoneName);
                 }
-            } //current state is punched out and editing it
+            }
             else {
                 if (is_null($punchOutDate) || is_null($punchOutTime)) {
                     throw AttendanceServiceException::punchOutDateTimeNull();
@@ -338,11 +328,10 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 if (!$punchOutOverlappingAttendanceRecords) {
                     throw AttendanceServiceException::punchOutOverlapFound();
                 }
-                //if there are no overlaps
                 $attendanceRecord->setPunchInUserTime($punchInDateTime);
                 $attendanceRecord->setPunchInUtcTime($punchInUTCDateTime);
                 $attendanceRecord->setPunchInNote($punchInNote);
-                $attendanceRecord->setPunchInAddress($punchInAddress); // PENAMBAHAN: Mengatur alamat punch in ke entitas (lagi, ini mungkin redundant jika blok if pertama dijalankan)
+                $attendanceRecord->setPunchInAddress($punchInAddress);
                 if ($this->isAllowedToEditTimezone($punchInOffset, $punchInTimezoneName)) {
                     $attendanceRecord->setPunchInTimeOffset($punchInOffset);
                     $attendanceRecord->setPunchInTimezoneName($punchInTimezoneName);
@@ -350,7 +339,7 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 $attendanceRecord->setPunchOutUserTime($punchOutDateTime);
                 $attendanceRecord->setPunchOutUtcTime($punchOutUTCDateTime);
                 $attendanceRecord->setPunchOutNote($punchOutNote);
-                $attendanceRecord->setPunchOutAddress($punchOutAddress); // PENAMBAHAN: Mengatur alamat punch out ke entitas
+                $attendanceRecord->setPunchOutAddress($punchOutAddress);
                 if ($this->isAllowedToEditTimezone(
                     $punchOutOffset,
                     $punchOutTimezoneName,
@@ -391,7 +380,7 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_PUNCH_IN_NOTE
             ),
-            $this->getRequestParams()->getStringOrNull( // PENAMBAHAN: Mengambil parameter alamat punch in dari request body
+            $this->getRequestParams()->getStringOrNull(
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_PUNCH_IN_ADDRESS
             ),
@@ -415,7 +404,7 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_PUNCH_OUT_NOTE
             ),
-            $this->getRequestParams()->getStringOrNull( // PENAMBAHAN: Mengambil parameter alamat punch out dari request body
+            $this->getRequestParams()->getStringOrNull(
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_PUNCH_OUT_ADDRESS
             )
@@ -445,15 +434,13 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
         ?float $timezoneOffset,
         ?string $timezoneName
     ): bool {
-        //auth user trying to update employee timezone, but either timezoneOffset or timezoneName
-        //or both of them are missing
         if (is_null($timezoneOffset) && is_null($timezoneName)) {
             return false;
         } elseif ((is_null($timezoneOffset) && !is_null($timezoneName)) ||
             (!is_null($timezoneOffset) && is_null($timezoneName))
         ) {
             throw AttendanceServiceException::invalidTimezoneDetails();
-        } //auth user tyring to update employee timezone with valid timezoneOffset and timezoneName
+        }
         else {
             return true;
         }
@@ -535,7 +522,6 @@ class AttendanceRecordAPI extends Endpoint implements ResourceEndpoint
                 ),
                 true
             ),
-            // PENAMBAHAN: Aturan validasi untuk parameter alamat punch out
             $this->getValidationDecorator()->notRequiredParamRule(
                 new ParamRule(
                     self::PARAMETER_PUNCH_OUT_ADDRESS,

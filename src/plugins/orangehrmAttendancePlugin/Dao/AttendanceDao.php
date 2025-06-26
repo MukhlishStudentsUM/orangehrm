@@ -217,7 +217,6 @@ class AttendanceDao extends BaseDao
             $q->andWhere('attendanceRecord.id != :recordId');
             $q->setParameter('recordId', $recordId);
         }
-        // if any records found in the data source (count greater than 0) -> overlap found
         return $this->getPaginator($q)->count() > 0;
     }
 
@@ -356,22 +355,18 @@ class AttendanceDao extends BaseDao
         $this->setSortingAndPaginationParams($q, $attendanceReportSearchFilterParams);
 
         if (is_null($attendanceReportSearchFilterParams->getFromDate()) && is_null($attendanceReportSearchFilterParams->getToDate())) {
-            // both from date and to date is null
             $q->leftJoin('employee.attendanceRecords', 'attendanceRecord');
         } elseif (!is_null($attendanceReportSearchFilterParams->getFromDate()) && is_null($attendanceReportSearchFilterParams->getToDate())) {
-            // from date is not null and to date is null
             $q->leftJoin('employee.attendanceRecords', 'attendanceRecord', Expr\Join::WITH, $q->expr()->andX(
                 $q->expr()->gte('attendanceRecord.punchInUserTime', ':fromDate')
             ));
             $q->setParameter('fromDate', $attendanceReportSearchFilterParams->getFromDate());
         } elseif (is_null($attendanceReportSearchFilterParams->getFromDate()) && !is_null($attendanceReportSearchFilterParams->getToDate())) {
-            // from date is null and to date is not null
             $q->leftJoin('employee.attendanceRecords', 'attendanceRecord', Expr\Join::WITH, $q->expr()->andX(
                 $q->expr()->lte('attendanceRecord.punchOutUserTime', ':toDate')
             ));
             $q->setParameter('toDate', $attendanceReportSearchFilterParams->getToDate());
         } elseif (!is_null($attendanceReportSearchFilterParams->getFromDate()) && !is_null($attendanceReportSearchFilterParams->getToDate())) {
-            // both from date and to date is not null
             $q->leftJoin('employee.attendanceRecords', 'attendanceRecord', Expr\Join::WITH, $q->expr()->andX(
                 $q->expr()->gte('attendanceRecord.punchInUserTime', ':fromDate'),
                 $q->expr()->lte('attendanceRecord.punchOutUserTime', ':toDate')

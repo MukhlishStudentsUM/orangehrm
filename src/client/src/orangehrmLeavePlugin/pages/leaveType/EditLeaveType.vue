@@ -45,10 +45,6 @@
                   :value="true" />
                 <oxd-input-field v-model="leaveType.situational" type="radio" :option-label="$t('general.no')"
                   :value="false" />
-                <oxd-input-field v-model="leaveType.situational" type="radio" :option-label="$t('general.yes')"
-                  :value="true" />
-                <oxd-input-field v-model="leaveType.situational" type="radio" :option-label="$t('general.no')"
-                  :value="false" />
               </oxd-input-group>
             </oxd-grid-item>
           </oxd-grid>

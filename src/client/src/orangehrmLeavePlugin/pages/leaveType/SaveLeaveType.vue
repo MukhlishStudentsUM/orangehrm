@@ -28,12 +28,7 @@
 
       <oxd-form :loading="isLoading" @submit-valid="onSave">
         <oxd-form-row>
-          <oxd-input-field
-            v-model="leaveType.name"
-            :label="$t('general.name')"
-            :rules="rules.name"
-            required
-          />
+          <oxd-input-field v-model="leaveType.name" :label="$t('general.name')" :rules="rules.name" required />
         </oxd-form-row>
 
         <oxd-form-row>
@@ -42,29 +37,15 @@
               <oxd-input-group :classes="{wrapper: '--status-grouped-field'}">
                 <template #label>
                   <div class="label-is-entitlement-situational">
-                    <oxd-label
-                      :label="$t('leave.is_entitlement_situational')"
-                    />
-                    <oxd-icon-button
-                      class="--help"
-                      name="exclamation-circle"
-                      :with-container="false"
-                      @click="onModalOpen"
-                    />
+                    <oxd-label :label="$t('leave.is_entitlement_situational')" />
+                    <oxd-icon-button class="--help" name="exclamation-circle" :with-container="false"
+                      @click="onModalOpen" />
                   </div>
                 </template>
-                <oxd-input-field
-                  v-model="leaveType.situational"
-                  type="radio"
-                  :option-label="$t('general.yes')"
-                  :value="true"
-                />
-                <oxd-input-field
-                  v-model="leaveType.situational"
-                  type="radio"
-                  :option-label="$t('general.no')"
-                  :value="false"
-                />
+                <oxd-input-field v-model="leaveType.situational" type="radio" :option-label="$t('general.yes')"
+                  :value="true" />
+                <oxd-input-field v-model="leaveType.situational" type="radio" :option-label="$t('general.no')"
+                  :value="false" />
               </oxd-input-group>
             </oxd-grid-item>
           </oxd-grid>
@@ -74,18 +55,11 @@
 
         <oxd-form-actions>
           <required-text />
-          <oxd-button
-            display-type="ghost"
-            :label="$t('general.cancel')"
-            @click="onCancel"
-          />
+          <oxd-button display-type="ghost" :label="$t('general.cancel')" @click="onCancel" />
           <submit-button />
         </oxd-form-actions>
       </oxd-form>
-      <entitlement-situational-modal
-        v-if="showModal"
-        @close="onModalClose"
-      ></entitlement-situational-modal>
+      <entitlement-situational-modal v-if="showModal" @close="onModalClose"></entitlement-situational-modal>
     </div>
   </div>
 </template>

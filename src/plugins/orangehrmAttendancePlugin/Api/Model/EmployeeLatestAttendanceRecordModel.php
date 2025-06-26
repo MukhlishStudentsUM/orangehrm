@@ -74,14 +74,14 @@ class EmployeeLatestAttendanceRecordModel implements Normalizable
                 ['getDecorator', 'getPunchInUserTime'],
                 'punchInTimeOffset',
                 'punchInNote',
-                'punchInAddress', // PENAMBAHAN: Filter untuk mengambil properti 'punchInAddress' dari entity
+                'punchInAddress',
                 ['getDecorator', 'getPunchOutUTCDate'],
                 ['getDecorator', 'getPunchOutUTCTime'],
                 ['getDecorator', 'getPunchOutUserDate'],
                 ['getDecorator', 'getPunchOutUserTime'],
                 'punchOutTimeOffset',
                 'punchOutNote',
-                'punchOutAddress', // PENAMBAHAN: Filter untuk mengambil properti 'punchOutAddress' dari entity
+                'punchOutAddress',
                 'state',
                 ['getDecorator', 'getAttendanceState'],
                 ['getEmployee', 'getEmpNumber'],
@@ -101,14 +101,14 @@ class EmployeeLatestAttendanceRecordModel implements Normalizable
                 ['punchIn', 'userTime'],
                 ['punchIn', 'offset'],
                 ['punchIn', 'note'],
-                ['punchIn', 'address'], // PENAMBAHAN: Mendefinisikan nama atribut 'address' di bawah 'punchIn'
+                ['punchIn', 'address'],
                 ['punchOut', 'utcDate'],
                 ['punchOut', 'utcTime'],
                 ['punchOut', 'userDate'],
                 ['punchOut', 'userTime'],
                 ['punchOut', 'offset'],
                 ['punchOut', 'note'],
-                ['punchOut', 'address'], // PENAMBAHAN: Mendefinisikan nama atribut 'address' di bawah 'punchOut'
+                ['punchOut', 'address'],
                 ['state', 'id'],
                 ['state', 'name'],
                 ['employee', 'empNumber'],

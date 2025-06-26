@@ -36,7 +36,7 @@ use OrangeHRM\Core\Traits\Service\NumberHelperTrait;
  * @OA\Property(property="userTime", type="string"),
  * @OA\Property(property="offset", type="string"),
  * @OA\Property(property="note", type="string"),
- * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchIn
+ * @OA\Property(property="address", type="string")
  * ),
  * @OA\Property(
  * property="punchOut",
@@ -45,7 +45,7 @@ use OrangeHRM\Core\Traits\Service\NumberHelperTrait;
  * @OA\Property(property="userTime", type="string"),
  * @OA\Property(property="offset", type="string"),
  * @OA\Property(property="note", type="string"),
- * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchOut
+ * @OA\Property(property="address", type="string") 
  * ),
  * @OA\Property(property="duration", type="integer"),
  * )
@@ -83,7 +83,7 @@ class AttendanceRecordListModel implements CollectionNormalizable, ModelConstruc
                     ),
                     'offset' => $employeeAttendanceRecord['punchInTimeOffset'],
                     'note' => $employeeAttendanceRecord['punchInNote'],
-                    'address' => $employeeAttendanceRecord['punchInAddress'], // PENAMBAHAN: Memasukkan data alamat punchIn
+                    'address' => $employeeAttendanceRecord['punchInAddress'],
                 ],
                 'punchOut' => [
                     'userDate' => $this->getDateTimeHelper()->formatDateTimeToYmd(
@@ -94,7 +94,7 @@ class AttendanceRecordListModel implements CollectionNormalizable, ModelConstruc
                     ),
                     'offset' => $employeeAttendanceRecord['punchOutTimeOffset'],
                     'note' => $employeeAttendanceRecord['punchOutNote'],
-                    'address' => $employeeAttendanceRecord['punchOutAddress'], // PENAMBAHAN: Memasukkan data alamat punchOut
+                    'address' => $employeeAttendanceRecord['punchOutAddress'],
                 ],
                 'duration' => $this->getNumberHelper()
                     ->numberFormat((float)$employeeAttendanceRecord['total'] / 3600, 2)

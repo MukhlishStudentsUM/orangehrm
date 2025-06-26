@@ -257,13 +257,11 @@ export default {
         this.jsTimeFormat,
       );
     },
-    // CRITICAL FIX: Computed property to check if the punch-in address is valid
     hasValidPunchInAddress() {
       const address = this.attendanceRecord.previousRecord?.address;
       if (!address) {
         return false;
       }
-      // Check for known invalid address strings from the backend or geocoding failures
       const invalidAddresses = [
         'Address not found',
         'Error retrieving address',
@@ -276,10 +274,8 @@ export default {
     },
   },
   watch: {
-    // CRITICAL FIX: Watch the result of the computed property
     hasValidPunchInAddress(isNowValid) {
       if (isNowValid && this.attendanceRecordId) {
-        // Wait for the DOM to update with the new v-if condition
         this.$nextTick(() => {
           this.displayPunchInLocation();
         });
@@ -288,7 +284,6 @@ export default {
   },
   mounted() {
     this.loadLeaflet().then(() => {
-      // Always display the current location map on mount
       this.$nextTick(() => {
         this.displayCurrentLocation();
       });
@@ -358,10 +353,9 @@ export default {
     },
 
     displayPunchInLocation() {
-      if (this.punchInMap) return; // Jangan buat peta lagi jika sudah ada
+      if (this.punchInMap) return;
       if (!this.leafletLoaded) return;
 
-      // Alamat punch-in sekarang sudah dalam format yang bersih dari database.
       const punchInAddress = this.attendanceRecord.previousRecord.address;
       if (!punchInAddress) return;
 
@@ -383,7 +377,7 @@ export default {
 
             const mapContainer = document.getElementById('punchInMap');
             if (mapContainer) {
-              this.punchInMap = window.L.map('punchInMap').setView(coords, 16); // Zoom lebih dekat
+              this.punchInMap = window.L.map('punchInMap').setView(coords, 16);
               window.L.tileLayer(
                 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
               ).addTo(this.punchInMap);
@@ -445,7 +439,6 @@ export default {
             },
             (error) => {
               console.error('Geolocation error:', error);
-              // Handle error display
             },
           );
         }
@@ -469,7 +462,6 @@ export default {
               addr.country,
             ];
 
-            // Filter bagian yang kosong (undefined) dan gabungkan dengan koma.
             this.attendanceRecord.address = cleanAddressParts
               .filter((part) => part)
               .join(', ');
@@ -477,9 +469,8 @@ export default {
               'Generated clean address to save:',
               this.attendanceRecord.address,
             );
-            // =========================================================
           } else if (data && data.display_name) {
-            this.attendanceRecord.address = data.display_name; // Fallback jika tidak ada detail
+            this.attendanceRecord.address = data.display_name;
           } else {
             this.attendanceRecord.address = 'Address not found';
           }
@@ -578,10 +569,8 @@ export default {
 
 <style src="./record-attendance.scss" lang="scss" scoped></style>
 <style>
-/* CSS UNTUK IMPORT LEAFLET */
 @import 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
 
-/* CSS LOKAL UNTUK TAMPILAN */
 .orangehrm-map-address {
   margin-top: 8px;
 }
@@ -598,13 +587,6 @@ export default {
   font-style: italic;
 }
 
-/*
- * Z-INDEX FIX V4: Solusi Definitif.
- * Memberikan `position: relative` dan `z-index: 0` pada div container peta.
- * Ini menciptakan "stacking context" baru yang akan "mengurung" semua elemen
- * di dalam peta (termasuk popup dan tombol zoom dengan z-index tinggi)
- * agar tidak menimpa elemen UI utama seperti header.
-*/
 #punchInMap,
 #punchOutMap {
   position: relative;

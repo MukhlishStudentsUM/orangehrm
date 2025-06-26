@@ -37,7 +37,7 @@ use OrangeHRM\Entity\AttendanceRecord;
  * @OA\Property(property="userTime", type="string"),
  * @OA\Property(property="timezoneOffset", type="string"),
  * @OA\Property(property="note", type="string"),
- * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchIn
+ * @OA\Property(property="address", type="string") 
  * ),
  * @OA\Property(
  * property="punchOut",
@@ -48,7 +48,7 @@ use OrangeHRM\Entity\AttendanceRecord;
  * @OA\Property(property="userTime", type="string"),
  * @OA\Property(property="timezoneOffset", type="string"),
  * @OA\Property(property="note", type="string"),
- * @OA\Property(property="address", type="string") // PENAMBAHAN: Dokumentasi OpenAPI untuk properti 'address' pada punchOut
+ * @OA\Property(property="address", type="string") 
  * ),
  * @OA\Property(
  * property="state",
@@ -85,14 +85,14 @@ class AttendanceRecordModel implements Normalizable
                 ['getDecorator', 'getPunchInUserTime'],
                 'punchInTimeOffset',
                 'punchInNote',
-                'punchInAddress', // PENAMBAHAN: Filter untuk mengambil properti 'punchInAddress' dari entity
+                'punchInAddress',
                 ['getDecorator', 'getPunchOutUTCDate'],
                 ['getDecorator', 'getPunchOutUTCTime'],
                 ['getDecorator', 'getPunchOutUserDate'],
                 ['getDecorator', 'getPunchOutUserTime'],
                 'punchOutTimeOffset',
                 'punchOutNote',
-                'punchOutAddress', // PENAMBAHAN: Filter untuk mengambil properti 'punchOutAddress' dari entity
+                'punchOutAddress',
                 'state',
                 ['getDecorator', 'getAttendanceState'],
                 ['getEmployee', 'getEmpNumber'],
@@ -112,14 +112,14 @@ class AttendanceRecordModel implements Normalizable
                 ['punchIn', 'userTime'],
                 ['punchIn', 'timezoneOffset'],
                 ['punchIn', 'note'],
-                ['punchIn', 'address'], // PENAMBAHAN: Mendefinisikan nama atribut 'address' di bawah 'punchIn'
+                ['punchIn', 'address'],
                 ['punchOut', 'utcDate'],
                 ['punchOut', 'utcTime'],
                 ['punchOut', 'userDate'],
                 ['punchOut', 'userTime'],
                 ['punchOut', 'timezoneOffset'],
                 ['punchOut', 'note'],
-                ['punchOut', 'address'], // PENAMBAHAN: Mendefinisikan nama atribut 'address' di bawah 'punchOut'
+                ['punchOut', 'address'],
                 ['state', 'id'],
                 ['state', 'name'],
                 ['employee', 'empNumber'],
