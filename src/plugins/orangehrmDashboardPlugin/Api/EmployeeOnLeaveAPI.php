@@ -13,7 +13,7 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with OrangeHRM.
- * If not, see <https://www.gnu.org/licenses/>.
+ * If not, see <https://www.gnu.org/licenses/ >.
  */
 
 namespace OrangeHRM\Dashboard\Api;
@@ -49,7 +49,7 @@ class EmployeeOnLeaveAPI extends Endpoint implements CollectionEndpoint
     use AuthUserTrait;
 
     public const PARAMETER_DATE = 'date';
-    public const META_PARAMETER_LEAVE_PERIOD_DEFINED =  'leavePeriodDefined';
+    public const META_PARAMETER_LEAVE_PERIOD_DEFINED = 'leavePeriodDefined';
 
     /**
      * @OA\Get(
@@ -91,6 +91,7 @@ class EmployeeOnLeaveAPI extends Endpoint implements CollectionEndpoint
         $employeeOnLeaveSearchFilterParams = new EmployeeOnLeaveSearchFilterParams();
 
         $this->setSortingAndPaginationParams($employeeOnLeaveSearchFilterParams);
+
         $date = $this->getRequestParams()->getDateTime(
             RequestParams::PARAM_TYPE_QUERY,
             self::PARAMETER_DATE,
@@ -100,18 +101,26 @@ class EmployeeOnLeaveAPI extends Endpoint implements CollectionEndpoint
 
         $employeeOnLeaveSearchFilterParams->setDate($date);
 
-        $showOnlyAccessibleEmployeesOnLeaveToday = $this->getConfigService()
-            ->getDashboardEmployeesOnLeaveTodayShowOnlyAccessibleConfig();
+        // ⚠️ Nonaktifkan pembatasan akses berdasarkan role
+        // Jadi SEMUA USER (admin & ESS) bisa lihat SEMUA data cuti
 
-        if ($showOnlyAccessibleEmployeesOnLeaveToday) {
-            $accessibleEmpNumbers = $this->getUserRoleManager()->getAccessibleEntityIds(Employee::class);
-            $employeeOnLeaveSearchFilterParams->setAccessibleEmpNumber([$this->getAuthUser()->getEmpNumber(),...$accessibleEmpNumbers]);
-        }
+        // Hapus atau disable pengecekan hak akses:
+        // $showOnlyAccessibleEmployeesOnLeaveToday = $this->getConfigService()
+        //     ->getDashboardEmployeesOnLeaveTodayShowOnlyAccessibleConfig();
+        //
+        // if ($showOnlyAccessibleEmployeesOnLeaveToday) {
+        //     $accessibleEmpNumbers = $this->getUserRoleManager()->getAccessibleEntityIds(Employee::class);
+        //     $employeeOnLeaveSearchFilterParams->setAccessibleEmpNumber([$this->getAuthUser()->getEmpNumber(),...$accessibleEmpNumbers]);
+        // }
+
+        // Selalu ambil semua data tanpa filter
+        $employeeOnLeaveSearchFilterParams->setAccessibleEmpNumber(null);
 
         $leavePeriodDefined = $this->getLeaveConfigService()->isLeavePeriodDefined();
 
         $empLeaveList = $this->getEmployeeOnLeaveService()->getEmployeeOnLeaveDao()
             ->getEmployeeOnLeaveList($employeeOnLeaveSearchFilterParams);
+
         $employeeCount = $this->getEmployeeOnLeaveService()->getEmployeeOnLeaveDao()
             ->getEmployeeOnLeaveCount($employeeOnLeaveSearchFilterParams);
 

@@ -70,40 +70,41 @@ class EmployeesOnLeaveListModel implements CollectionNormalizable, ModelConstruc
     }
 
     /**
-     * @inheritDoc
-     */
-    public function toArray(): array
-    {
-        $normalizedLeaves = [];
-        foreach ($this->leaves as $leave) {
-            $normalizedLeave = [
-                'id' => $leave->getId(),
-                'date' => $leave->getDecorator()->getLeaveDate(),
-                'lengthHours' => $leave->getLengthHours(),
-                'employee' => [
-                    'empNumber' => $leave->getEmployee()->getEmpNumber(),
-                    'lastName' => $leave->getEmployee()->getLastName(),
-                    'firstName' => $leave->getEmployee()->getFirstName(),
-                    'middleName' => $leave->getEmployee()->getMiddleName(),
-                    'employeeId' => $leave->getEmployee()->getEmployeeId(),
-                    'terminationId' => $leave->getEmployee()->getEmployeeTerminationRecord() ? $leave->getEmployee()
-                        ->getEmployeeTerminationRecord()->getId() : null
-                ],
-                'duration' => $leave->getDecorator()->getLeaveDuration(),
-                'endTime' => $leave->getDecorator()->getEndTime(),
-                'startTime' => $leave->getDecorator()->getStartTime(),
-            ];
-            if ($this->getUserRoleManager()
-                ->isEntityAccessible(Employee::class, $leave->getEmployee()->getEmpNumber())
-            ) {
-                $normalizedLeave['leaveType'] = [
-                    'id' => $leave->getLeaveType()->getId(),
-                    'name' => $leave->getLeaveType()->getName(),
-                    'deleted' => $leave->getLeaveType()->isDeleted()
-                ];
-            }
-            $normalizedLeaves[] = $normalizedLeave;
-        }
-        return $normalizedLeaves;
+ * @inheritDoc
+ */
+public function toArray(): array
+{
+    $normalizedLeaves = [];
+    foreach ($this->leaves as $leave) {
+        $employee = $leave->getEmployee();
+
+        $normalizedLeave = [
+            'id' => $leave->getId(),
+            'date' => $leave->getDecorator()->getLeaveDate(),
+            'lengthHours' => $leave->getLengthHours(),
+            'employee' => [
+                'empNumber' => $employee->getEmpNumber(),
+                'lastName' => $employee->getLastName(),
+                'firstName' => $employee->getFirstName(),
+                'middleName' => $employee->getMiddleName(),
+                'employeeId' => $employee->getEmployeeId(),
+                'terminationId' => $employee->getEmployeeTerminationRecord()
+                    ? $employee->getEmployeeTerminationRecord()->getId()
+                    : null,
+            ],
+            'duration' => $leave->getDecorator()->getLeaveDuration(),
+            'endTime' => $leave->getDecorator()->getEndTime(),
+            'startTime' => $leave->getDecorator()->getStartTime(),
+            'leaveType' => [
+                'id' => $leave->getLeaveType()->getId(),
+                'name' => $leave->getLeaveType()->getName(),
+                'deleted' => $leave->getLeaveType()->isDeleted(),
+            ],
+        ];
+
+        $normalizedLeaves[] = $normalizedLeave;
     }
+
+    return $normalizedLeaves;
+}
 }
