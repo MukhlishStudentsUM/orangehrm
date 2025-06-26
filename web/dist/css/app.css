@@ -3305,9 +3305,6 @@
   !*** css ./node_modules/@vue/cli-service/node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/@vue/cli-service/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/@vue/cli-service/node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/@vue/cli-service/node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./src/orangehrmAttendancePlugin/components/RecordAttendance.vue?vue&type=style&index=1&id=230a4068&lang=css (1) ***!
   \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 
-/* CSS UNTUK IMPORT LEAFLET */
-
-/* CSS LOKAL UNTUK TAMPILAN */
 .orangehrm-map-address {
   margin-top: 8px;
 }
@@ -3322,14 +3319,6 @@
   color: #666;
   font-style: italic;
 }
-
-/*
- * Z-INDEX FIX V4: Solusi Definitif.
- * Memberikan `position: relative` dan `z-index: 0` pada div container peta.
- * Ini menciptakan "stacking context" baru yang akan "mengurung" semua elemen
- * di dalam peta (termasuk popup dan tombol zoom dengan z-index tinggi)
- * agar tidak menimpa elemen UI utama seperti header.
-*/
 #punchInMap,
 #punchOutMap {
   position: relative;
