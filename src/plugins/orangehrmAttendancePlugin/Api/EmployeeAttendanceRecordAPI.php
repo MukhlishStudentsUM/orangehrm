@@ -670,7 +670,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
     public function update(): EndpointResult
     {
         try {
-            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note, $address) = $this->getCommonRequestParams();
+            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note, $address, $latitude, $longitude) = $this->getCommonRequestParams();
             $allowedWorkflowItems = $this->getUserRoleManager()->getAllowedActions(
                 WorkflowStateMachine::FLOW_ATTENDANCE,
                 AttendanceRecord::STATE_PUNCHED_IN,
@@ -703,7 +703,9 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
                 $timezoneOffset,
                 $timezoneName,
                 $note,
-                $address
+                $address,
+                $latitude,
+                $longitude
             );
             $attendanceRecord = $this->getAttendanceService()->getAttendanceDao()->savePunchRecord($lastPunchInRecord);
             return new EndpointResourceResult(AttendanceRecordModel::class, $attendanceRecord);
@@ -736,6 +738,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
      * @param string $punchOutTimezoneName
      * @param string|null $punchOutNote
      * @param string|null $punchOutAddress
+     * @param float|null $punchOutLatitude  // --- TAMBAHKAN ---
+     * @param float|null $punchOutLongitude // --- TAMBAHKAN ---
      */
     protected function setPunchOutAttendanceRecord(
         AttendanceRecord $attendanceRecord,
@@ -745,7 +749,9 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         float $punchOutTimezoneOffset,
         string $punchOutTimezoneName,
         ?string $punchOutNote,
-        ?string $punchOutAddress
+        ?string $punchOutAddress,
+        ?float $punchOutLatitude,
+        ?float $punchOutLongitude
     ): void {
         $attendanceRecord->setState($state);
         $attendanceRecord->setPunchOutUtcTime($punchOutUtcTime);
@@ -754,6 +760,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         $attendanceRecord->setPunchOutTimezoneName($punchOutTimezoneName);
         $attendanceRecord->setPunchOutNote($punchOutNote);
         $attendanceRecord->setPunchOutAddress($punchOutAddress);
+        $attendanceRecord->setPunchOutLatitude($punchOutLatitude);
+        $attendanceRecord->setPunchOutLongitude($punchOutLongitude);
     }
 
     /**
