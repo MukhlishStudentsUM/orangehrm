@@ -78,6 +78,22 @@ class AttendanceRecord
      */
     private ?string $punchInAddress = null;
 
+    // --- TAMBAHKAN PROPERTI DI BAWAH INI ---
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="punch_in_latitude", type="decimal", precision=10, scale=8, nullable=true)
+     */
+    private ?float $punchInLatitude = null;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="punch_in_longitude", type="decimal", precision=11, scale=8, nullable=true)
+     */
+    private ?float $punchInLongitude = null;
+    // --- AKHIR PENAMBAHAN PROPERTI ---
+
     /**
      * @var string|null
      *
@@ -118,6 +134,22 @@ class AttendanceRecord
      * @ORM\Column(name="punch_out_address", type="string", length=255, nullable=true)
      */
     private ?string $punchOutAddress = null;
+
+    // --- TAMBAHKAN PROPERTI DI BAWAH INI ---
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="punch_out_latitude", type="decimal", precision=10, scale=8, nullable=true)
+     */
+    private ?float $punchOutLatitude = null;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="punch_out_longitude", type="decimal", precision=11, scale=8, nullable=true)
+     */
+    private ?float $punchOutLongitude = null;
+    // --- AKHIR PENAMBAHAN PROPERTI ---
 
     /**
      * @var string|null
@@ -385,5 +417,45 @@ class AttendanceRecord
     public function setPunchOutTimezoneName(?string $punchOutTimezoneName): void
     {
         $this->punchOutTimezoneName = $punchOutTimezoneName;
+    }
+
+    public function getPunchInLatitude(): ?float
+    {
+        return $this->punchInLatitude;
+    }
+
+    public function setPunchInLatitude(?float $punchInLatitude): void
+    {
+        $this->punchInLatitude = $punchInLatitude;
+    }
+
+    public function getPunchInLongitude(): ?float
+    {
+        return $this->punchInLongitude;
+    }
+
+    public function setPunchInLongitude(?float $punchInLongitude): void
+    {
+        $this->punchInLongitude = $punchInLongitude;
+    }
+
+    public function getPunchOutLatitude(): ?float
+    {
+        return $this->punchOutLatitude;
+    }
+
+    public function setPunchOutLatitude(?float $punchOutLatitude): void
+    {
+        $this->punchOutLatitude = $punchOutLatitude;
+    }
+
+    public function getPunchOutLongitude(): ?float
+    {
+        return $this->punchOutLongitude;
+    }
+
+    public function setPunchOutLongitude(?float $punchOutLongitude): void
+    {
+        $this->punchOutLongitude = $punchOutLongitude;
     }
 }

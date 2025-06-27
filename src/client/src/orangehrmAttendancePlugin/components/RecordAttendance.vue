@@ -21,11 +21,8 @@
 
 <template>
   <oxd-form :loading="isLoading" @submit-valid="onSave">
-    <!-- BAGIAN INFORMASI PUNCH IN SEBELUMNYA -->
     <oxd-form-row v-if="attendanceRecord.previousRecord">
-      <!-- DIUBAH: Grid utama diubah menjadi 2 kolom agar sejajar seperti form di bawahnya -->
       <oxd-grid :cols="2" class="orangehrm-full-width-grid">
-        <!-- KOLOM KIRI: Berisi info Waktu dan Catatan Punch In -->
         <oxd-grid-item>
           <oxd-input-group :label="$t('attendance.punched_in_time')">
             <oxd-text type="subtitle-2">
@@ -37,7 +34,6 @@
             </oxd-text>
           </oxd-input-group>
           <br />
-          <!-- Memberi sedikit spasi -->
           <oxd-input-group v-if="attendanceRecord.previousRecord.note" :label="$t('attendance.punched_in_note')">
             <oxd-text type="subtitle-2">
               {{ attendanceRecord.previousRecord.note }}
@@ -45,13 +41,13 @@
           </oxd-input-group>
         </oxd-grid-item>
 
-        <!-- KOLOM KANAN: Berisi Peta Lokasi Punch In -->
         <oxd-grid-item>
           <oxd-input-group :label="$t('Punch In Location')">
-            <div v-if="hasValidPunchInAddress" id="punchInMap" style="height: 200px; width: 100%; border-radius: 8px">
+            <div v-show="hasValidPunchInCoordinates" id="punchInMap" ref="punchInMapEl"
+              style="height: 200px; width: 100%; border-radius: 8px">
             </div>
-            <oxd-text v-else class="orangehrm-map-address orangehrm-map-placeholder">
-              Location data not available for this punch in.
+            <oxd-text v-if="!hasValidPunchInCoordinates" class="orangehrm-map-address orangehrm-map-placeholder">
+              Location data not available.
             </oxd-text>
             <oxd-text v-if="attendanceRecord.previousRecord.address" type="subtitle-2" class="orangehrm-map-address">
               {{ attendanceRecord.previousRecord.address }}
@@ -63,10 +59,8 @@
 
     <oxd-divider v-if="attendanceRecord.previousRecord" />
 
-    <!-- BAGIAN FORM UTAMA (TIDAK BERUBAH) -->
     <oxd-form-row>
       <oxd-grid :cols="2" class="orangehrm-full-width-grid">
-        <!-- Kolom Kiri: Date, Time, Note -->
         <oxd-grid-item>
           <oxd-grid :cols="2">
             <oxd-grid-item>
@@ -91,11 +85,10 @@
           </oxd-grid>
         </oxd-grid-item>
 
-        <!-- Kolom Kanan: Peta Punch Out -->
         <oxd-grid-item>
           <oxd-input-group :label="!attendanceRecordId
-            ? $t('general.location')
-            : $t('Punch Out Location (Current)')
+  ? $t('general.location')
+  : $t('Punch Out Location (Current)')
             ">
             <div id="punchOutMap" style="height: 200px; width: 100%"></div>
             <oxd-text v-if="attendanceRecord.address" type="subtitle-2" class="orangehrm-map-address">
@@ -144,6 +137,8 @@ const attendanceRecordModal = {
   timezone: null,
   previousRecord: null,
   address: null,
+  latitude: null,
+  longitude: null,
 };
 
 export default {
@@ -213,24 +208,15 @@ export default {
         this.jsTimeFormat,
       );
     },
-    hasValidPunchInAddress() {
-      const address = this.attendanceRecord.previousRecord?.address;
-      if (!address) {
-        return false;
-      }
-      const invalidAddresses = [
-        'Address not found',
-        'Error retrieving address',
-        'Map not loaded',
-        'Unable to retrieve location',
-        'Geolocation not supported',
-        'Failed to load map',
-      ];
-      return !invalidAddresses.includes(address);
+    hasValidPunchInCoordinates() {
+      const punchIn = this.attendanceRecord.previousRecord;
+      return !!(punchIn && punchIn.latitude && punchIn.longitude);
     },
   },
   watch: {
-    hasValidPunchInAddress(isNowValid) {
+    // Watcher ini akan menjadi penjaga utama kita
+    hasValidPunchInCoordinates(isNowValid) {
+      console.log(`[WATCHER] hasValidPunchInCoordinates changed to: ${isNowValid}`);
       if (isNowValid && this.attendanceRecordId) {
         this.$nextTick(() => {
           this.displayPunchInLocation();
@@ -240,6 +226,7 @@ export default {
   },
   mounted() {
     this.loadLeaflet().then(() => {
+      console.log('[MOUNTED] Leaflet library has been loaded.');
       this.$nextTick(() => {
         this.displayCurrentLocation();
       });
@@ -271,7 +258,9 @@ export default {
       })
       .then((response) => {
         if (response) {
+          console.log('[API] Received "latest" record data:', response.data);
           const { data } = response.data;
+          // Ini akan memicu watcher di atas
           this.attendanceRecord.previousRecord = data.punchIn;
         }
       })
@@ -286,7 +275,7 @@ export default {
   },
   methods: {
     loadLeaflet() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (window.L) {
           this.leafletLoaded = true;
           resolve();
@@ -299,144 +288,100 @@ export default {
           this.leafletLoaded = true;
           resolve();
         };
-        script.onerror = () => {
-          console.error('Failed to load Leaflet.js');
-          this.attendanceRecord.address = 'Failed to load map';
-          reject();
-        };
         document.head.appendChild(script);
       });
     },
 
     displayPunchInLocation() {
-      if (this.punchInMap) return;
-      if (!this.leafletLoaded) return;
+      const mapContainer = this.$refs.punchInMapEl;
 
-      const punchInAddress = this.attendanceRecord.previousRecord.address;
-      if (!punchInAddress) return;
+      if (!mapContainer || !this.leafletLoaded) {
+        // Jika container belum siap atau leaflet belum dimuat, coba lagi sesaat
+        setTimeout(() => this.displayPunchInLocation(), 100);
+        return;
+      }
 
-      console.log(
-        'Attempting to geocode with clean address from DB:',
-        punchInAddress,
-      );
+      const lat = parseFloat(this.attendanceRecord.previousRecord.latitude);
+      const lon = parseFloat(this.attendanceRecord.previousRecord.longitude);
 
-      fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-          punchInAddress,
-        )}&format=json&limit=1`,
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data.length > 0) {
-            const { lat, lon } = data[0];
-            const coords = [parseFloat(lat), parseFloat(lon)];
+      if (isNaN(lat) || isNaN(lon)) {
+        return;
+      }
 
-            const mapContainer = document.getElementById('punchInMap');
-            if (mapContainer) {
-              this.punchInMap = window.L.map('punchInMap').setView(coords, 16);
-              window.L.tileLayer(
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              ).addTo(this.punchInMap);
+      const coords = [lat, lon];
 
-              window.L.marker(coords, {
-                icon: new window.L.Icon({
-                  iconUrl:
-                    'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                  shadowUrl:
-                    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                  iconSize: [25, 41],
-                  iconAnchor: [12, 41],
-                  popupAnchor: [1, -34],
-                  shadowSize: [41, 41],
-                }),
-              })
-                .addTo(this.punchInMap)
-                .bindPopup(`<b>You Punched In Here</b>`)
-                .openPopup();
+      if (this.punchInMap) {
+        this.punchInMap.remove();
+      }
 
-              console.log(
-                'Punch In map rendered successfully with better accuracy.',
-              );
-            }
-          } else {
-            console.error(
-              'Geocoding failed for Punch In: Address not found via API.',
-              punchInAddress,
-            );
-          }
-        })
-        .catch((error) =>
-          console.error('Error during Punch In Geocoding:', error),
-        );
+      this.punchInMap = window.L.map(mapContainer).setView(coords, 16);
+
+      // Karena v-show digunakan, terkadang peta perlu di-refresh ukurannya
+      this.punchInMap.invalidateSize();
+
+      window.L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap contributors' }
+      ).addTo(this.punchInMap);
+
+      window.L.marker(coords, {
+        icon: new window.L.Icon({
+          iconUrl:
+            'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+          shadowUrl:
+            'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41],
+        }),
+      })
+        .addTo(this.punchInMap)
+        .bindPopup(`<b>You Punched In Here</b>`)
+        .openPopup();
     },
 
+    // ... sisa method lainnya (displayCurrentLocation, reverseGeocode, onSave, dll) tidak perlu diubah ...
     displayCurrentLocation() {
-      if (this.punchOutMap) return;
-      if (!this.leafletLoaded) return;
-
+      if (this.punchOutMap || !this.leafletLoaded) return;
       const mapContainer = document.getElementById('punchOutMap');
       if (mapContainer) {
         this.punchOutMap = window.L.map('punchOutMap').setView([0, 0], 2);
-        window.L.tileLayer(
-          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        ).addTo(this.punchOutMap);
-
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(this.punchOutMap);
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
               const { latitude, longitude } = position.coords;
               const coords = [latitude, longitude];
               this.punchOutMap.setView(coords, 16);
-              window.L.marker(coords)
-                .addTo(this.punchOutMap)
-                .bindPopup('<b>Your Current Location</b>')
-                .openPopup();
+              window.L.marker(coords).addTo(this.punchOutMap).bindPopup('<b>Your Current Location</b>').openPopup();
               this.reverseGeocode(latitude, longitude);
             },
-            (error) => {
-              console.error('Geolocation error:', error);
-            },
+            (error) => { console.error('Geolocation error:', error); },
           );
         }
       }
     },
-
     reverseGeocode(lat, lon) {
-      fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&lat=${lat}&lon=${lon}`,
-      )
+      this.attendanceRecord.latitude = lat;
+      this.attendanceRecord.longitude = lon;
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&lat=${lat}&lon=${lon}`)
         .then((response) => response.json())
         .then((data) => {
           if (data && data.address) {
             const addr = data.address;
-            const cleanAddressParts = [
-              addr.road,
-              addr.neighbourhood,
-              addr.suburb || addr.village,
-              addr.city || addr.town,
-              addr.state,
-              addr.country,
-            ];
-
-            this.attendanceRecord.address = cleanAddressParts
-              .filter((part) => part)
-              .join(', ');
-            console.log(
-              'Generated clean address to save:',
-              this.attendanceRecord.address,
-            );
+            const cleanAddressParts = [addr.road, addr.neighbourhood, addr.suburb || addr.village, addr.city || addr.town, addr.state, addr.country];
+            this.attendanceRecord.address = cleanAddressParts.filter((part) => part).join(', ');
           } else if (data && data.display_name) {
             this.attendanceRecord.address = data.display_name;
           } else {
             this.attendanceRecord.address = 'Address not found';
           }
-        })
-        .catch((error) => {
+        }).catch((error) => {
           console.error('Reverse geocoding error:', error);
           this.attendanceRecord.address = 'Error retrieving address';
         });
     },
-
     onSave() {
       this.isLoading = true;
       const timezone = guessTimezone();
@@ -448,73 +393,54 @@ export default {
             time: this.attendanceRecord.time,
             note: this.attendanceRecord.note,
             address: this.attendanceRecord.address,
-            timezoneOffset:
-              this.attendanceRecord.timezone?._offset ?? timezone.offset,
+            latitude: this.attendanceRecord.latitude,
+            longitude: this.attendanceRecord.longitude,
+            timezoneOffset: this.attendanceRecord.timezone?._offset ?? timezone.offset,
             timezoneName: this.attendanceRecord.timezone?.id ?? timezone.name,
           },
         })
         .then(() => this.$toast.saveSuccess())
         .then(() => {
           this.employeeId
-            ? navigate('/attendance/viewAttendanceRecord', undefined, {
-              employeeId: this.employeeId,
-              date: this.date,
-            })
+            ? navigate('/attendance/viewAttendanceRecord', undefined, { employeeId: this.employeeId, date: this.date })
             : reloadPage();
         });
     },
-
     setCurrentDateTime() {
       return new Promise((resolve, reject) => {
         this.http
           .request({ method: 'GET', url: '/api/v2/attendance/current-datetime' })
           .then((res) => {
             const { utcDate, utcTime } = res.data.data;
-            const currentDate = parseDate(
-              `${utcDate} ${utcTime} +00:00`,
-              'yyyy-MM-dd HH:mm xxx',
-            );
-            this.attendanceRecord.date =
-              this.date ?? formatDate(currentDate, 'yyyy-MM-dd');
+            const currentDate = parseDate(`${utcDate} ${utcTime} +00:00`, 'yyyy-MM-dd HH:mm xxx');
+            this.attendanceRecord.date = this.date ?? formatDate(currentDate, 'yyyy-MM-dd');
             this.attendanceRecord.time = formatDate(currentDate, 'HH:mm');
             resolve();
           })
           .catch((error) => reject(error));
       });
     },
-
     validateDate() {
-      if (!this.attendanceRecord.date || !this.attendanceRecord.time) {
-        return true;
-      }
-      if (parseDate(this.attendanceRecord.date) === null) {
-        return true;
-      }
+      if (!this.attendanceRecord.date || !this.attendanceRecord.time) return true;
+      if (parseDate(this.attendanceRecord.date) === null) return true;
       const tzOffset = (new Date().getTimezoneOffset() / 60) * -1;
       return new Promise((resolve) => {
         this.http
           .request({
             method: 'GET',
-            url: `/api/v2/attendance/${this.attendanceRecordId ? 'punch-out' : 'punch-in'
-              }/overlaps`,
+            url: `/api/v2/attendance/${this.attendanceRecordId ? 'punch-out' : 'punch-in'}/overlaps`,
             params: {
               date: this.attendanceRecord.date,
               time: this.attendanceRecord.time,
-              timezoneOffset:
-                this.attendanceRecord.timezone?._offset ?? tzOffset,
+              timezoneOffset: this.attendanceRecord.timezone?._offset ?? tzOffset,
               empNumber: this.employeeId,
             },
-            validateStatus: (status) =>
-              (status >= 200 && status < 300) || status == 400,
+            validateStatus: (status) => (status >= 200 && status < 300) || status == 400,
           })
           .then((res) => {
             const { data, error } = res.data;
-            if (error) {
-              return resolve(error.message);
-            }
-            return data.valid === true
-              ? resolve(true)
-              : resolve(this.$t('attendance.overlapping_records_found'));
+            if (error) return resolve(error.message);
+            return data.valid === true ? resolve(true) : resolve(this.$t('attendance.overlapping_records_found'));
           });
       });
     },

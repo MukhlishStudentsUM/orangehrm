@@ -64,6 +64,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
     public const PARAMETER_TIMEZONE_NAME = 'timezoneName';
     public const PARAMETER_NOTE = 'note';
     public const PARAMETER_ADDRESS = 'address';
+    public const PARAMETER_LATITUDE = 'latitude';
+    public const PARAMETER_LONGITUDE = 'longitude';
     public const FILTER_FROM_DATE = 'fromDate';
     public const FILTER_TO_DATE = 'toDate';
 
@@ -295,7 +297,7 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
     public function create(): EndpointResourceResult
     {
         try {
-            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note, $address) = $this->getCommonRequestParams();
+            list($empNumber, $date, $time, $timezoneOffset, $timezoneName, $note, $address, $latitude, $longitude) = $this->getCommonRequestParams();
             $allowedWorkflowItems = $this->getUserRoleManager()->getAllowedActions(
                 WorkflowStateMachine::FLOW_ATTENDANCE,
                 AttendanceRecord::STATE_INITIAL,
@@ -324,7 +326,9 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
                 $timezoneOffset,
                 $timezoneName,
                 $note,
-                $address
+                $address,
+                $latitude,
+                $longitude
             );
             $attendanceRecord = $this->getAttendanceService()->getAttendanceDao()->savePunchRecord($attendanceRecord);
             return new EndpointResourceResult(AttendanceRecordModel::class, $attendanceRecord);
@@ -367,6 +371,14 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
             $this->getRequestParams()->getStringOrNull(
                 RequestParams::PARAM_TYPE_BODY,
                 self::PARAMETER_ADDRESS
+            ),
+            $this->getRequestParams()->getFloatOrNull(
+                RequestParams::PARAM_TYPE_BODY,
+                self::PARAMETER_LATITUDE
+            ),
+            $this->getRequestParams()->getFloatOrNull(
+                RequestParams::PARAM_TYPE_BODY,
+                self::PARAMETER_LONGITUDE
             )
         ];
     }
@@ -409,6 +421,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
      * @param string $punchInTimezoneName
      * @param string|null $punchInNote
      * @param string|null $punchInAddress
+     * @param float|null $punchInLatitude  // --- TAMBAHKAN ---
+     * @param float|null $punchInLongitude // --- TAMBAHKAN ---
      */
     protected function setPunchInAttendanceRecord(
         AttendanceRecord $attendanceRecord,
@@ -418,7 +432,9 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         float $punchInTimezoneOffset,
         string $punchInTimezoneName,
         ?string $punchInNote,
-        ?string $punchInAddress
+        ?string $punchInAddress,
+        ?float $punchInLatitude,    // --- TAMBAHKAN ---
+        ?float $punchInLongitude    // --- TAMBAHKAN ---
     ): void {
         $attendanceRecord->setState($state);
         $attendanceRecord->setPunchInUtcTime($punchInUtcTime);
@@ -427,6 +443,8 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
         $attendanceRecord->setPunchInTimezoneName($punchInTimezoneName);
         $attendanceRecord->setPunchInNote($punchInNote);
         $attendanceRecord->setPunchInAddress($punchInAddress);
+        $attendanceRecord->setPunchInLatitude($punchInLatitude);
+        $attendanceRecord->setPunchInLongitude($punchInLongitude);
     }
 
     /**
@@ -481,6 +499,18 @@ class EmployeeAttendanceRecordAPI extends Endpoint implements CrudEndpoint
                     new Rule(Rules::STRING_TYPE)
                 ),
                 true
+            ),
+            $this->getValidationDecorator()->notRequiredParamRule(
+                new ParamRule(
+                    self::PARAMETER_LATITUDE,
+                    new Rule(Rules::FLOAT_TYPE)
+                )
+            ),
+            $this->getValidationDecorator()->notRequiredParamRule(
+                new ParamRule(
+                    self::PARAMETER_LONGITUDE,
+                    new Rule(Rules::FLOAT_TYPE)
+                )
             )
         ];
     }
