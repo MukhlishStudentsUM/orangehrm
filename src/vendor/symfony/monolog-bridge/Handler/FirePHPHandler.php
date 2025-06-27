@@ -25,19 +25,19 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 class FirePHPHandler extends BaseFirePHPHandler
 {
     private array $headers = [];
-    private ?Response $response = null;
+    private $response;
 
     /**
      * Adds the headers to the response once it's created.
      */
-    public function onKernelResponse(ResponseEvent $event): void
+    public function onKernelResponse(ResponseEvent $event)
     {
         if (!$event->isMainRequest()) {
             return;
         }
 
         $request = $event->getRequest();
-        if (!preg_match('{\bFirePHP/\d+\.\d+\b}', $request->headers->get('User-Agent', ''))
+        if (!preg_match('{\bFirePHP/\d+\.\d+\b}', $request->headers->get('User-Agent'))
             && !$request->headers->has('X-FirePHP-Version')) {
             self::$sendHeaders = false;
             $this->headers = [];
@@ -52,13 +52,16 @@ class FirePHPHandler extends BaseFirePHPHandler
         $this->headers = [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function sendHeader($header, $content): void
     {
         if (!self::$sendHeaders) {
             return;
         }
 
-        if (null !== $this->response) {
+        if ($this->response) {
             $this->response->headers->set($header, $content);
         } else {
             $this->headers[$header] = $content;

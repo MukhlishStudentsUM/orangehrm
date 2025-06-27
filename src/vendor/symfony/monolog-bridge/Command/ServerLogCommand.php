@@ -12,10 +12,7 @@
 namespace Symfony\Bridge\Monolog\Command;
 
 use Monolog\Formatter\FormatterInterface;
-use Monolog\Handler\HandlerInterface;
-use Monolog\Level;
 use Monolog\Logger;
-use Monolog\LogRecord;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -35,8 +32,8 @@ class ServerLogCommand extends Command
 {
     private const BG_COLOR = ['black', 'blue', 'cyan', 'green', 'magenta', 'red', 'white', 'yellow'];
 
-    private ExpressionLanguage $el;
-    private HandlerInterface $handler;
+    private $el;
+    private $handler;
 
     public function isEnabled(): bool
     {
@@ -52,9 +49,6 @@ class ServerLogCommand extends Command
         return parent::isEnabled();
     }
 
-    /**
-     * @return void
-     */
     protected function configure()
     {
         if (!class_exists(ConsoleFormatter::class)) {
@@ -85,7 +79,7 @@ EOF
         $filter = $input->getOption('filter');
         if ($filter) {
             if (!class_exists(ExpressionLanguage::class)) {
-                throw new LogicException('Package "symfony/expression-language" is required to use the "filter" option. Try running "composer require symfony/expression-language".');
+                throw new LogicException('Package "symfony/expression-language" is required to use the "filter" option.');
             }
             $this->el = new ExpressionLanguage();
         }
@@ -150,24 +144,13 @@ EOF
         }
     }
 
-    private function displayLog(OutputInterface $output, int $clientId, array $record): void
+    private function displayLog(OutputInterface $output, int $clientId, array $record)
     {
         if (isset($record['log_id'])) {
             $clientId = unpack('H*', $record['log_id'])[1];
         }
         $logBlock = sprintf('<bg=%s> </>', self::BG_COLOR[$clientId % 8]);
         $output->write($logBlock);
-
-        if (Logger::API >= 3) {
-            $record = new LogRecord(
-                $record['datetime'],
-                $record['channel'],
-                Level::fromValue($record['level']),
-                $record['message'],
-                $record['context']->getValue(true),
-                $record['extra']->getValue(true),
-            );
-        }
 
         $this->handler->handle($record);
     }

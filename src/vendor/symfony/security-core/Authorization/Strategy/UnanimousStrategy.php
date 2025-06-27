@@ -31,6 +31,9 @@ final class UnanimousStrategy implements AccessDecisionStrategyInterface, \Strin
         $this->allowIfAllAbstainDecisions = $allowIfAllAbstainDecisions;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function decide(\Traversable $results): bool
     {
         $grant = 0;

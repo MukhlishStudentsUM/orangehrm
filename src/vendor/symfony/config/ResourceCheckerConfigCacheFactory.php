@@ -29,6 +29,9 @@ class ResourceCheckerConfigCacheFactory implements ConfigCacheFactoryInterface
         $this->resourceCheckers = $resourceCheckers;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function cache(string $file, callable $callable): ConfigCacheInterface
     {
         $cache = new ResourceCheckerConfigCache($file, $this->resourceCheckers);

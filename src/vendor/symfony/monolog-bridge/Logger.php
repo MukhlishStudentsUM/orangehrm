@@ -11,8 +11,6 @@
 
 namespace Symfony\Bridge\Monolog;
 
-trigger_deprecation('symfony/monolog-bridge', '6.4', 'The "%s" class is deprecated, use HttpKernel\'s DebugLoggerConfigurator instead.', Logger::class);
-
 use Monolog\Logger as BaseLogger;
 use Monolog\ResettableInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,11 +18,14 @@ use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 /**
- * @deprecated since Symfony 6.4, use HttpKernel's DebugLoggerConfigurator instead
+ * @author Fabien Potencier <fabien@symfony.com>
  */
 class Logger extends BaseLogger implements DebugLoggerInterface, ResetInterface
 {
-    public function getLogs(?Request $request = null): array
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogs(Request $request = null): array
     {
         if ($logger = $this->getDebugLogger()) {
             return $logger->getLogs($request);
@@ -33,7 +34,10 @@ class Logger extends BaseLogger implements DebugLoggerInterface, ResetInterface
         return [];
     }
 
-    public function countErrors(?Request $request = null): int
+    /**
+     * {@inheritdoc}
+     */
+    public function countErrors(Request $request = null): int
     {
         if ($logger = $this->getDebugLogger()) {
             return $logger->countErrors($request);
@@ -42,13 +46,19 @@ class Logger extends BaseLogger implements DebugLoggerInterface, ResetInterface
         return 0;
     }
 
-    public function clear(): void
+    /**
+     * {@inheritdoc}
+     */
+    public function clear()
     {
         if ($logger = $this->getDebugLogger()) {
             $logger->clear();
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function reset(): void
     {
         $this->clear();
@@ -58,9 +68,6 @@ class Logger extends BaseLogger implements DebugLoggerInterface, ResetInterface
         }
     }
 
-    /**
-     * @return void
-     */
     public function removeDebugLogger()
     {
         foreach ($this->processors as $k => $processor) {

@@ -29,7 +29,7 @@ class DirectoryResource implements SelfCheckingResourceInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $resource, ?string $pattern = null)
+    public function __construct(string $resource, string $pattern = null)
     {
         $resolvedResource = realpath($resource) ?: (file_exists($resource) ? $resource : false);
         $this->pattern = $pattern;
@@ -43,7 +43,7 @@ class DirectoryResource implements SelfCheckingResourceInterface
 
     public function __toString(): string
     {
-        return hash('xxh128', serialize([$this->resource, $this->pattern]));
+        return md5(serialize([$this->resource, $this->pattern]));
     }
 
     public function getResource(): string
@@ -56,6 +56,9 @@ class DirectoryResource implements SelfCheckingResourceInterface
         return $this->pattern;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isFresh(int $timestamp): bool
     {
         if (!is_dir($this->resource)) {
@@ -81,7 +84,7 @@ class DirectoryResource implements SelfCheckingResourceInterface
             // for broken links
             try {
                 $fileMTime = $file->getMTime();
-            } catch (\RuntimeException) {
+            } catch (\RuntimeException $e) {
                 continue;
             }
 

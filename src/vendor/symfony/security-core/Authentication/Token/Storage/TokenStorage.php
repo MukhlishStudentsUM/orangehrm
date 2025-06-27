@@ -24,9 +24,12 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 class TokenStorage implements TokenStorageInterface, ResetInterface
 {
-    private ?TokenInterface $token = null;
+    private $token = null;
     private ?\Closure $initializer = null;
 
+    /**
+     * {@inheritdoc}
+     */
     public function getToken(): ?TokenInterface
     {
         if ($initializer = $this->initializer) {
@@ -38,14 +41,10 @@ class TokenStorage implements TokenStorageInterface, ResetInterface
     }
 
     /**
-     * @return void
+     * {@inheritdoc}
      */
-    public function setToken(?TokenInterface $token = null)
+    public function setToken(TokenInterface $token = null)
     {
-        if (1 > \func_num_args()) {
-            trigger_deprecation('symfony/security-core', '6.2', 'Calling "%s()" without any arguments is deprecated, pass null explicitly instead.', __METHOD__);
-        }
-
         if ($token) {
             // ensure any initializer is called
             $this->getToken();
@@ -57,12 +56,9 @@ class TokenStorage implements TokenStorageInterface, ResetInterface
 
     public function setInitializer(?callable $initializer): void
     {
-        $this->initializer = null === $initializer ? null : $initializer(...);
+        $this->initializer = null === $initializer || $initializer instanceof \Closure ? $initializer : \Closure::fromCallable($initializer);
     }
 
-    /**
-     * @return void
-     */
     public function reset()
     {
         $this->setToken(null);

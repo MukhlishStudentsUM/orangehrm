@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-interface TokenInterface extends \Stringable
+interface TokenInterface
 {
     /**
      * Returns a string representation of the Token.
@@ -50,16 +50,12 @@ interface TokenInterface extends \Stringable
     /**
      * Sets the authenticated user in the token.
      *
-     * @return void
-     *
      * @throws \InvalidArgumentException
      */
     public function setUser(UserInterface $user);
 
     /**
      * Removes sensitive information from the token.
-     *
-     * @return void
      */
     public function eraseCredentials();
 
@@ -67,8 +63,6 @@ interface TokenInterface extends \Stringable
 
     /**
      * @param array $attributes The token attributes
-     *
-     * @return void
      */
     public function setAttributes(array $attributes);
 
@@ -79,9 +73,6 @@ interface TokenInterface extends \Stringable
      */
     public function getAttribute(string $name): mixed;
 
-    /**
-     * @return void
-     */
     public function setAttribute(string $name, mixed $value);
 
     /**

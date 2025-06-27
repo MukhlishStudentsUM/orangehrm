@@ -22,8 +22,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UserPasswordValidator extends ConstraintValidator
 {
-    private TokenStorageInterface $tokenStorage;
-    private PasswordHasherFactoryInterface $hasherFactory;
+    private $tokenStorage;
+    private $hasherFactory;
 
     public function __construct(TokenStorageInterface $tokenStorage, PasswordHasherFactoryInterface $hasherFactory)
     {
@@ -32,7 +32,7 @@ class UserPasswordValidator extends ConstraintValidator
     }
 
     /**
-     * @return void
+     * {@inheritdoc}
      */
     public function validate(mixed $password, Constraint $constraint)
     {
@@ -41,9 +41,7 @@ class UserPasswordValidator extends ConstraintValidator
         }
 
         if (null === $password || '' === $password) {
-            $this->context->buildViolation($constraint->message)
-                ->setCode(UserPassword::INVALID_PASSWORD_ERROR)
-                ->addViolation();
+            $this->context->addViolation($constraint->message);
 
             return;
         }
@@ -55,15 +53,13 @@ class UserPasswordValidator extends ConstraintValidator
         $user = $this->tokenStorage->getToken()->getUser();
 
         if (!$user instanceof PasswordAuthenticatedUserInterface) {
-            throw new ConstraintDefinitionException(sprintf('The "%s" class must implement the "%s" interface.', get_debug_type($user), PasswordAuthenticatedUserInterface::class));
+            throw new ConstraintDefinitionException(sprintf('The "%s" class must implement the "%s" interface.', PasswordAuthenticatedUserInterface::class, get_debug_type($user)));
         }
 
         $hasher = $this->hasherFactory->getPasswordHasher($user);
 
         if (null === $user->getPassword() || !$hasher->verify($user->getPassword(), $password, $user instanceof LegacyPasswordAuthenticatedUserInterface ? $user->getSalt() : null)) {
-            $this->context->buildViolation($constraint->message)
-                ->setCode(UserPassword::INVALID_PASSWORD_ERROR)
-                ->addViolation();
+            $this->context->addViolation($constraint->message);
         }
     }
 }

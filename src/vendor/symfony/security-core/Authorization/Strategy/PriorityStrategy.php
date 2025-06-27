@@ -32,6 +32,9 @@ final class PriorityStrategy implements AccessDecisionStrategyInterface, \String
         $this->allowIfAllAbstainDecisions = $allowIfAllAbstainDecisions;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function decide(\Traversable $results): bool
     {
         foreach ($results as $result) {

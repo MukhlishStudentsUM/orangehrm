@@ -38,14 +38,21 @@ use Symfony\Component\PasswordHasher\LegacyPasswordHasherInterface;
 #[AsCommand(name: 'security:hash-password', description: 'Hash a user password')]
 class UserPasswordHashCommand extends Command
 {
-    public function __construct(
-        private PasswordHasherFactoryInterface $hasherFactory,
-        private array $userClasses = [],
-    ) {
+    private $hasherFactory;
+    private array $userClasses;
+
+    public function __construct(PasswordHasherFactoryInterface $hasherFactory, array $userClasses = [])
+    {
+        $this->hasherFactory = $hasherFactory;
+        $this->userClasses = $userClasses;
+
         parent::__construct();
     }
 
-    protected function configure(): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
         $this
             ->addArgument('password', InputArgument::OPTIONAL, 'The plain password to hash.')
@@ -61,7 +68,7 @@ in the database while developing the application.
 Suppose that you have the following security configuration in your application:
 
 <comment>
-# config/packages/security.yml
+# app/config/security.yml
 security:
     password_hashers:
         Symfony\Component\Security\Core\User\InMemoryUser: plaintext
@@ -93,6 +100,9 @@ EOF
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -139,7 +149,7 @@ EOF
         $hashedPassword = $hasher->hash($password, $salt);
 
         $rows = [
-            ['Hasher used', $hasher::class],
+            ['Hasher used', \get_class($hasher)],
             ['Password hash', $hashedPassword],
         ];
         if (!$emptySalt) {
@@ -148,7 +158,7 @@ EOF
         $io->table(['Key', 'Value'], $rows);
 
         if (!$emptySalt) {
-            $errorIo->note(\sprintf('Make sure that your salt storage field fits the salt length: %s chars', \strlen($salt)));
+            $errorIo->note(sprintf('Make sure that your salt storage field fits the salt length: %s chars', \strlen($salt)));
         } elseif ($saltlessWithoutEmptySalt) {
             $errorIo->note('Self-salting hasher used: the hasher generated its own built-in salt.');
         }
@@ -162,6 +172,8 @@ EOF
     {
         if ($input->mustSuggestArgumentValuesFor('user-class')) {
             $suggestions->suggestValues($this->userClasses);
+
+            return;
         }
     }
 

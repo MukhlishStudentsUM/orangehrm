@@ -32,7 +32,7 @@ class Conf
             $prefix = defined('TEST_DB_PREFIX') ? TEST_DB_PREFIX : '';
             $this->dbName = $prefix . 'test_orangehrm';
         } else {
-            $this->dbName = 'orangehrm';
+            $this->dbName = 'algostudio';
         }
         $this->dbUser = 'root';
         $this->dbPass = '';

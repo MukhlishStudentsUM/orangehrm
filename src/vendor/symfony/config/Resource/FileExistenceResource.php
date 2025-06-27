@@ -38,7 +38,7 @@ class FileExistenceResource implements SelfCheckingResourceInterface
 
     public function __toString(): string
     {
-        return 'existence.'.$this->resource;
+        return $this->resource;
     }
 
     public function getResource(): string
@@ -46,6 +46,9 @@ class FileExistenceResource implements SelfCheckingResourceInterface
         return $this->resource;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isFresh(int $timestamp): bool
     {
         return file_exists($this->resource) === $this->exists;

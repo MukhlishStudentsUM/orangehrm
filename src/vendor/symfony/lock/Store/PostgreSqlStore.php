@@ -26,7 +26,7 @@ use Symfony\Component\Lock\SharedLockStoreInterface;
  */
 class PostgreSqlStore implements BlockingSharedLockStoreInterface, BlockingStoreInterface
 {
-    private \PDO $conn;
+    private $conn;
     private string $dsn;
     private string $username = '';
     private string $password = '';
@@ -156,7 +156,7 @@ class PostgreSqlStore implements BlockingSharedLockStoreInterface, BlockingStore
             // If lock acquired = there is no other ReadLock
             $store->save($key);
             $this->unlockShared($key);
-        } catch (LockConflictedException) {
+        } catch (LockConflictedException $e) {
             // an other key exists in this ReadLock
         }
 

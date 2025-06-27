@@ -21,7 +21,10 @@ use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
  */
 class BooleanNodeDefinition extends ScalarNodeDefinition
 {
-    public function __construct(?string $name, ?NodeParentInterface $parent = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(?string $name, NodeParentInterface $parent = null)
     {
         parent::__construct($name, $parent);
 
@@ -37,6 +40,8 @@ class BooleanNodeDefinition extends ScalarNodeDefinition
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @throws InvalidDefinitionException
      */
     public function cannotBeEmpty(): static

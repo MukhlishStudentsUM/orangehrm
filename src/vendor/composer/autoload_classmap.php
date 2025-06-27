@@ -9,7 +9,6 @@ return array(
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'CURLStringFile' => $vendorDir . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Deprecated' => $vendorDir . '/symfony/polyfill-php84/Resources/stubs/Deprecated.php',
     'IntlException' => $vendorDir . '/symfony/polyfill-intl-messageformatter/Resources/stubs/IntlException.php',
     'JsonException' => $vendorDir . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
     'Jumbojett\\OpenIDConnectClient' => $vendorDir . '/jumbojett/openid-connect-php/src/OpenIDConnectClient.php',

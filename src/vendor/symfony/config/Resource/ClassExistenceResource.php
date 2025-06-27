@@ -32,9 +32,9 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
 
     /**
      * @param string    $resource The fully-qualified class name
-     * @param bool|null $exists   Boolean when the existence check has already been done
+     * @param bool|null $exists   Boolean when the existency check has already been done
      */
-    public function __construct(string $resource, ?bool $exists = null)
+    public function __construct(string $resource, bool $exists = null)
     {
         $this->resource = $resource;
         if (null !== $exists) {
@@ -53,6 +53,8 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @throws \ReflectionException when a parent class/interface/trait is not found
      */
     public function isFresh(int $timestamp): bool
@@ -96,7 +98,9 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
             }
         }
 
-        $this->exists ??= $exists;
+        if (null === $this->exists) {
+            $this->exists = $exists;
+        }
 
         return $this->exists[0] xor !$exists[0];
     }
@@ -116,7 +120,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
     /**
      * @internal
      */
-    public function __wakeup(): void
+    public function __wakeup()
     {
         if (\is_bool($this->exists)) {
             $this->exists = [$this->exists, null];
@@ -139,7 +143,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
      *
      * @internal
      */
-    public static function throwOnRequiredClass(string $class, ?\Exception $previous = null): void
+    public static function throwOnRequiredClass(string $class, \Exception $previous = null)
     {
         // If the passed class is the resource being checked, we shouldn't throw.
         if (null === $previous && self::$autoloadedClass === $class) {
@@ -160,7 +164,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
 
         $message = sprintf('Class "%s" not found.', $class);
 
-        if ($class !== (self::$autoloadedClass ?? $class)) {
+        if (self::$autoloadedClass !== $class) {
             $message = substr_replace($message, sprintf(' while loading "%s"', self::$autoloadedClass), -1, 0);
         }
 
@@ -217,6 +221,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface
             foreach ($props as $p => $v) {
                 if (null !== $v) {
                     $r = new \ReflectionProperty(\Exception::class, $p);
+                    $r->setAccessible(true);
                     $r->setValue($e, $v);
                 }
             }

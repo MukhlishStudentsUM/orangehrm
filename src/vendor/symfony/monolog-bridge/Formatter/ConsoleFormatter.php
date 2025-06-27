@@ -13,7 +13,6 @@ namespace Symfony\Bridge\Monolog\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Logger;
-use Monolog\LogRecord;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\VarDumper\Cloner\Data;
 use Symfony\Component\VarDumper\Cloner\Stub;
@@ -25,13 +24,9 @@ use Symfony\Component\VarDumper\Dumper\CliDumper;
  *
  * @author Tobias Schultze <http://tobion.de>
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
- *
- * @final since Symfony 6.1
  */
 class ConsoleFormatter implements FormatterInterface
 {
-    use CompatibilityFormatter;
-
     public const SIMPLE_FORMAT = "%datetime% %start_tag%%level_name%%end_tag% <comment>[%channel%]</> %message%%context%%extra%\n";
     public const SIMPLE_DATE = 'H:i:s';
 
@@ -47,14 +42,14 @@ class ConsoleFormatter implements FormatterInterface
     ];
 
     private array $options;
-    private VarCloner $cloner;
+    private $cloner;
 
     /**
      * @var resource|null
      */
     private $outputBuffer;
 
-    private CliDumper $dumper;
+    private $dumper;
 
     /**
      * Available options:
@@ -77,20 +72,23 @@ class ConsoleFormatter implements FormatterInterface
         if (class_exists(VarCloner::class)) {
             $this->cloner = new VarCloner();
             $this->cloner->addCasters([
-                '*' => $this->castObject(...),
+                '*' => [$this, 'castObject'],
             ]);
 
             $this->outputBuffer = fopen('php://memory', 'r+');
             if ($this->options['multiline']) {
                 $output = $this->outputBuffer;
             } else {
-                $output = $this->echoLine(...);
+                $output = [$this, 'echoLine'];
             }
 
             $this->dumper = new CliDumper($output, null, CliDumper::DUMP_LIGHT_ARRAY | CliDumper::DUMP_COMMA_SEPARATOR);
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function formatBatch(array $records): mixed
     {
         foreach ($records as $key => $record) {
@@ -100,11 +98,11 @@ class ConsoleFormatter implements FormatterInterface
         return $records;
     }
 
-    private function doFormat(array|LogRecord $record): mixed
+    /**
+     * {@inheritdoc}
+     */
+    public function format(array $record): mixed
     {
-        if ($record instanceof LogRecord) {
-            $record = $record->toArray();
-        }
         $record = $this->replacePlaceHolder($record);
 
         if (!$this->options['ignore_empty_context_and_extra'] || !empty($record['context'])) {
@@ -138,7 +136,7 @@ class ConsoleFormatter implements FormatterInterface
     /**
      * @internal
      */
-    public function echoLine(string $line, int $depth, string $indentPad): void
+    public function echoLine(string $line, int $depth, string $indentPad)
     {
         if (-1 !== $depth) {
             fwrite($this->outputBuffer, $line);
@@ -185,7 +183,7 @@ class ConsoleFormatter implements FormatterInterface
         return $record;
     }
 
-    private function dumpData(mixed $data, ?bool $colors = null): string
+    private function dumpData(mixed $data, bool $colors = null): string
     {
         if (!isset($this->dumper)) {
             return '';

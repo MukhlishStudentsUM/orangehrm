@@ -22,9 +22,9 @@ final class PersistentToken implements PersistentTokenInterface
     private string $userIdentifier;
     private string $series;
     private string $tokenValue;
-    private \DateTimeImmutable $lastUsed;
+    private \DateTime $lastUsed;
 
-    public function __construct(string $class, string $userIdentifier, string $series, #[\SensitiveParameter] string $tokenValue, \DateTimeInterface $lastUsed)
+    public function __construct(string $class, string $userIdentifier, string $series, string $tokenValue, \DateTime $lastUsed)
     {
         if (empty($class)) {
             throw new \InvalidArgumentException('$class must not be empty.');
@@ -43,9 +43,12 @@ final class PersistentToken implements PersistentTokenInterface
         $this->userIdentifier = $userIdentifier;
         $this->series = $series;
         $this->tokenValue = $tokenValue;
-        $this->lastUsed = \DateTimeImmutable::createFromInterface($lastUsed);
+        $this->lastUsed = $lastUsed;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getClass(): string
     {
         return $this->class;
@@ -56,18 +59,27 @@ final class PersistentToken implements PersistentTokenInterface
         return $this->userIdentifier;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSeries(): string
     {
         return $this->series;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTokenValue(): string
     {
         return $this->tokenValue;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getLastUsed(): \DateTime
     {
-        return \DateTime::createFromImmutable($this->lastUsed);
+        return $this->lastUsed;
     }
 }

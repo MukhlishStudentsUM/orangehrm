@@ -20,6 +20,9 @@ namespace Symfony\Component\Security\Core\Exception;
  */
 class CookieTheftException extends AuthenticationException
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getMessageKey(): string
     {
         return 'Cookie has already been used by someone else.';

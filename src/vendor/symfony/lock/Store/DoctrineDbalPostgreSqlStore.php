@@ -29,7 +29,7 @@ use Symfony\Component\Lock\SharedLockStoreInterface;
  */
 class DoctrineDbalPostgreSqlStore implements BlockingSharedLockStoreInterface, BlockingStoreInterface
 {
-    private Connection $conn;
+    private $conn;
     private static $storeRegistry = [];
 
     /**
@@ -141,7 +141,7 @@ class DoctrineDbalPostgreSqlStore implements BlockingSharedLockStoreInterface, B
             // If lock acquired = there is no other ReadLock
             $store->save($key);
             $this->unlockShared($key);
-        } catch (LockConflictedException) {
+        } catch (LockConflictedException $e) {
             // an other key exists in this ReadLock
         }
 

@@ -35,12 +35,12 @@ final class AccessDecisionManager implements AccessDecisionManagerInterface
     private iterable $voters;
     private array $votersCacheAttributes = [];
     private array $votersCacheObject = [];
-    private AccessDecisionStrategyInterface $strategy;
+    private $strategy;
 
     /**
      * @param iterable<mixed, VoterInterface> $voters An array or an iterator of VoterInterface instances
      */
-    public function __construct(iterable $voters = [], ?AccessDecisionStrategyInterface $strategy = null)
+    public function __construct(iterable $voters = [], AccessDecisionStrategyInterface $strategy = null)
     {
         $this->voters = $voters;
         $this->strategy = $strategy ?? new AffirmativeStrategy();
@@ -48,6 +48,8 @@ final class AccessDecisionManager implements AccessDecisionManagerInterface
 
     /**
      * @param bool $allowMultipleAttributes Whether to allow passing multiple values to the $attributes array
+     *
+     * {@inheritdoc}
      */
     public function decide(TokenInterface $token, array $attributes, mixed $object = null, bool $allowMultipleAttributes = false): bool
     {
@@ -86,7 +88,7 @@ final class AccessDecisionManager implements AccessDecisionManagerInterface
             $keyAttributes[] = \is_string($attribute) ? $attribute : null;
         }
         // use `get_class` to handle anonymous classes
-        $keyObject = \is_object($object) ? $object::class : get_debug_type($object);
+        $keyObject = \is_object($object) ? \get_class($object) : get_debug_type($object);
         foreach ($this->voters as $key => $voter) {
             if (!$voter instanceof CacheableVoterInterface) {
                 yield $voter;

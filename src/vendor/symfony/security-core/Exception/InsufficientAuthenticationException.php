@@ -21,6 +21,9 @@ namespace Symfony\Component\Security\Core\Exception;
  */
 class InsufficientAuthenticationException extends AuthenticationException
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getMessageKey(): string
     {
         return 'Not privileged to request the resource.';

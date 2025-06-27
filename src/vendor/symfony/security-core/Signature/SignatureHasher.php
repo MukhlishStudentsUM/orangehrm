@@ -12,7 +12,6 @@
 namespace Symfony\Component\Security\Core\Signature;
 
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\Signature\Exception\ExpiredSignatureException;
 use Symfony\Component\Security\Core\Signature\Exception\InvalidSignatureException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -25,10 +24,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class SignatureHasher
 {
-    private PropertyAccessorInterface $propertyAccessor;
+    private $propertyAccessor;
     private array $signatureProperties;
     private string $secret;
-    private ?ExpiredSignatureStorage $expiredSignaturesStorage;
+    private $expiredSignaturesStorage;
     private ?int $maxUses;
 
     /**
@@ -36,12 +35,8 @@ class SignatureHasher
      * @param ExpiredSignatureStorage|null $expiredSignaturesStorage If provided, secures a sequence of hashes that are expired
      * @param int|null                     $maxUses                  Used together with $expiredSignatureStorage to allow a maximum usage of a hash
      */
-    public function __construct(PropertyAccessorInterface $propertyAccessor, array $signatureProperties, #[\SensitiveParameter] string $secret, ?ExpiredSignatureStorage $expiredSignaturesStorage = null, ?int $maxUses = null)
+    public function __construct(PropertyAccessorInterface $propertyAccessor, array $signatureProperties, string $secret, ExpiredSignatureStorage $expiredSignaturesStorage = null, int $maxUses = null)
     {
-        if (!$secret) {
-            throw new InvalidArgumentException('A non-empty secret is required.');
-        }
-
         $this->propertyAccessor = $propertyAccessor;
         $this->signatureProperties = $signatureProperties;
         $this->secret = $secret;
@@ -118,7 +113,7 @@ class SignatureHasher
             }
 
             if (!\is_scalar($value) && !$value instanceof \Stringable) {
-                throw new \InvalidArgumentException(sprintf('The property path "%s" on the user object "%s" must return a value that can be cast to a string, but "%s" was returned.', $property, $user::class, get_debug_type($value)));
+                throw new \InvalidArgumentException(sprintf('The property path "%s" on the user object "%s" must return a value that can be cast to a string, but "%s" was returned.', $property, \get_class($user), get_debug_type($value)));
             }
             hash_update($fieldsHash, ':'.base64_encode($value));
         }

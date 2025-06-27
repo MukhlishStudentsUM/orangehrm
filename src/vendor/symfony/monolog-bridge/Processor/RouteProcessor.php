@@ -11,7 +11,6 @@
 
 namespace Symfony\Bridge\Monolog\Processor;
 
-use Monolog\LogRecord;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -36,21 +35,21 @@ class RouteProcessor implements EventSubscriberInterface, ResetInterface
         $this->reset();
     }
 
-    public function __invoke(array|LogRecord $record): array|LogRecord
+    public function __invoke(array $records): array
     {
-        if ($this->routeData && !isset($record['extra']['requests'])) {
-            $record['extra']['requests'] = array_values($this->routeData);
+        if ($this->routeData && !isset($records['extra']['requests'])) {
+            $records['extra']['requests'] = array_values($this->routeData);
         }
 
-        return $record;
+        return $records;
     }
 
-    public function reset(): void
+    public function reset()
     {
         $this->routeData = [];
     }
 
-    public function addRouteData(RequestEvent $event): void
+    public function addRouteData(RequestEvent $event)
     {
         if ($event->isMainRequest()) {
             $this->reset();
@@ -73,7 +72,7 @@ class RouteProcessor implements EventSubscriberInterface, ResetInterface
         $this->routeData[spl_object_id($request)] = $currentRequestData;
     }
 
-    public function removeRouteData(FinishRequestEvent $event): void
+    public function removeRouteData(FinishRequestEvent $event)
     {
         $requestId = spl_object_id($event->getRequest());
         unset($this->routeData[$requestId]);

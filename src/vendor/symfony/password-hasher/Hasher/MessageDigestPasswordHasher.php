@@ -24,6 +24,9 @@ class MessageDigestPasswordHasher implements LegacyPasswordHasherInterface
 {
     use CheckPasswordLengthTrait;
 
+    private string $algorithm;
+    private bool $encodeHashAsBase64;
+    private int $iterations = 1;
     private int $hashLength = -1;
 
     /**
@@ -31,26 +34,28 @@ class MessageDigestPasswordHasher implements LegacyPasswordHasherInterface
      * @param bool   $encodeHashAsBase64 Whether to base64 encode the password hash
      * @param int    $iterations         The number of iterations to use to stretch the password hash
      */
-    public function __construct(
-        private string $algorithm = 'sha512',
-        private bool $encodeHashAsBase64 = true,
-        private int $iterations = 5000,
-    ) {
+    public function __construct(string $algorithm = 'sha512', bool $encodeHashAsBase64 = true, int $iterations = 5000)
+    {
+        $this->algorithm = $algorithm;
+        $this->encodeHashAsBase64 = $encodeHashAsBase64;
+
         try {
             $this->hashLength = \strlen($this->hash('', 'salt'));
-        } catch (\LogicException) {
+        } catch (\LogicException $e) {
             // ignore algorithm not supported
         }
+
+        $this->iterations = $iterations;
     }
 
-    public function hash(#[\SensitiveParameter] string $plainPassword, ?string $salt = null): string
+    public function hash(string $plainPassword, string $salt = null): string
     {
         if ($this->isPasswordTooLong($plainPassword)) {
             throw new InvalidPasswordException();
         }
 
         if (!\in_array($this->algorithm, hash_algos(), true)) {
-            throw new LogicException(\sprintf('The algorithm "%s" is not supported.', $this->algorithm));
+            throw new LogicException(sprintf('The algorithm "%s" is not supported.', $this->algorithm));
         }
 
         $salted = $this->mergePasswordAndSalt($plainPassword, $salt);
@@ -64,9 +69,9 @@ class MessageDigestPasswordHasher implements LegacyPasswordHasherInterface
         return $this->encodeHashAsBase64 ? base64_encode($digest) : bin2hex($digest);
     }
 
-    public function verify(string $hashedPassword, #[\SensitiveParameter] string $plainPassword, ?string $salt = null): bool
+    public function verify(string $hashedPassword, string $plainPassword, string $salt = null): bool
     {
-        if (\strlen($hashedPassword) !== $this->hashLength || str_contains($hashedPassword, '$')) {
+        if (\strlen($hashedPassword) !== $this->hashLength || false !== strpos($hashedPassword, '$')) {
             return false;
         }
 
@@ -78,7 +83,7 @@ class MessageDigestPasswordHasher implements LegacyPasswordHasherInterface
         return false;
     }
 
-    private function mergePasswordAndSalt(#[\SensitiveParameter] string $password, ?string $salt): string
+    private function mergePasswordAndSalt(string $password, ?string $salt): string
     {
         if (!$salt) {
             return $password;

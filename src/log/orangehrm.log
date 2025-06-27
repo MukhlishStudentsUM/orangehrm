@@ -404,3 +404,315 @@ Stack trace:
 [2025-06-25T12:36:52.011929+02:00] orangehrm.ERROR: No workflow item found for APPLY leave action! [] []
 [2025-06-25T12:53:09.083983+02:00] orangehrm.ERROR: No workflow item found for APPLY leave action! [] []
 [2025-06-25T12:53:14.077112+02:00] orangehrm.ERROR: No workflow item found for APPLY leave action! [] []
+[26-Jun-2025 11:28:27 Europe/Berlin] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in C:\xampp\htdocs\orangehrm\src\vendor\composer\platform_check.php on line 24
+[26-Jun-2025 11:28:28 Europe/Berlin] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in C:\xampp\htdocs\orangehrm\src\vendor\composer\platform_check.php on line 24
+[26-Jun-2025 11:28:28 Europe/Berlin] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in C:\xampp\htdocs\orangehrm\src\vendor\composer\platform_check.php on line 24
+[26-Jun-2025 11:28:29 Europe/Berlin] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in C:\xampp\htdocs\orangehrm\src\vendor\composer\platform_check.php on line 24
+[26-Jun-2025 11:28:29 Europe/Berlin] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in C:\xampp\htdocs\orangehrm\src\vendor\composer\platform_check.php on line 24
+[26-Jun-2025 11:28:29 Europe/Berlin] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in C:\xampp\htdocs\orangehrm\src\vendor\composer\platform_check.php on line 24
+[26-Jun-2025 11:28:30 Europe/Berlin] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in C:\xampp\htdocs\orangehrm\src\vendor\composer\platform_check.php on line 24
+[26-Jun-2025 11:29:23 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php:34
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(34): PDO->__construct('mysql:host=loca...', 'root', '', Array)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Driver\PDO\Exception: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\Exception.php:24
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(40): Doctrine\DBAL\Driver\PDO\Exception::new(Object(PDOException))
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Exception\ConnectionException: An exception occurred in the driver: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php:101
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1976): Doctrine\DBAL\Driver\API\MySQL\ExceptionConverter->convert(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1924): Doctrine\DBAL\Connection->handleDriverException(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(385): Doctrine\DBAL\Connection->convertException(Object(Doctrine\DBAL\Driver\PDO\Exception))
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#8 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#13 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#16 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#17 {main}
+  thrown in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php on line 101
+[26-Jun-2025 11:29:24 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php:34
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(34): PDO->__construct('mysql:host=loca...', 'root', '', Array)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Driver\PDO\Exception: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\Exception.php:24
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(40): Doctrine\DBAL\Driver\PDO\Exception::new(Object(PDOException))
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Exception\ConnectionException: An exception occurred in the driver: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php:101
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1976): Doctrine\DBAL\Driver\API\MySQL\ExceptionConverter->convert(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1924): Doctrine\DBAL\Connection->handleDriverException(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(385): Doctrine\DBAL\Connection->convertException(Object(Doctrine\DBAL\Driver\PDO\Exception))
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#8 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#13 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#16 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#17 {main}
+  thrown in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php on line 101
+[26-Jun-2025 11:29:26 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php:34
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(34): PDO->__construct('mysql:host=loca...', 'root', '', Array)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Driver\PDO\Exception: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\Exception.php:24
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(40): Doctrine\DBAL\Driver\PDO\Exception::new(Object(PDOException))
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Exception\ConnectionException: An exception occurred in the driver: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php:101
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1976): Doctrine\DBAL\Driver\API\MySQL\ExceptionConverter->convert(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1924): Doctrine\DBAL\Connection->handleDriverException(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(385): Doctrine\DBAL\Connection->convertException(Object(Doctrine\DBAL\Driver\PDO\Exception))
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#8 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#13 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#16 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#17 {main}
+  thrown in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php on line 101
+[26-Jun-2025 11:29:27 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php:34
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(34): PDO->__construct('mysql:host=loca...', 'root', '', Array)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Driver\PDO\Exception: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\Exception.php:24
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(40): Doctrine\DBAL\Driver\PDO\Exception::new(Object(PDOException))
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Exception\ConnectionException: An exception occurred in the driver: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php:101
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1976): Doctrine\DBAL\Driver\API\MySQL\ExceptionConverter->convert(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1924): Doctrine\DBAL\Connection->handleDriverException(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(385): Doctrine\DBAL\Connection->convertException(Object(Doctrine\DBAL\Driver\PDO\Exception))
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#8 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#13 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#16 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#17 {main}
+  thrown in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php on line 101
+[26-Jun-2025 11:29:28 Europe/Berlin] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php:34
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(34): PDO->__construct('mysql:host=loca...', 'root', '', Array)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Driver\PDO\Exception: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\Exception.php:24
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\PDO\MySQL\Driver.php(40): Doctrine\DBAL\Driver\PDO\Exception::new(Object(PDOException))
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(383): Doctrine\DBAL\Driver\PDO\MySQL\Driver->connect(Array)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#8 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#13 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#16 {main}
+
+Next Doctrine\DBAL\Exception\ConnectionException: An exception occurred in the driver: SQLSTATE[HY000] [1049] Unknown database 'orangehrm' in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php:101
+Stack trace:
+#0 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1976): Doctrine\DBAL\Driver\API\MySQL\ExceptionConverter->convert(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#1 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1924): Doctrine\DBAL\Connection->handleDriverException(Object(Doctrine\DBAL\Driver\PDO\Exception), NULL)
+#2 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(385): Doctrine\DBAL\Connection->convertException(Object(Doctrine\DBAL\Driver\PDO\Exception))
+#3 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1692): Doctrine\DBAL\Connection->connect()
+#4 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Connection.php(1087): Doctrine\DBAL\Connection->getWrappedConnection()
+#5 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(789): Doctrine\DBAL\Connection->executeQuery('SELECT t0.name ...', Array, Array)
+#6 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\Persisters\Entity\BasicEntityPersister.php(807): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load(Array, NULL)
+#7 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityManager.php(530): Doctrine\ORM\Persisters\Entity\BasicEntityPersister->loadById(Array)
+#8 C:\xampp\htdocs\orangehrm\src\vendor\doctrine\orm\src\EntityRepository.php(196): Doctrine\ORM\EntityManager->find('OrangeHRM\\Entit...', Array, NULL, NULL)
+#9 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Dao\ConfigDao.php(53): Doctrine\ORM\EntityRepository->find('instance.identi...')
+#10 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(152): OrangeHRM\Core\Dao\ConfigDao->getValue('instance.identi...')
+#11 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\Service\ConfigService.php(430): OrangeHRM\Core\Service\ConfigService->_getConfigValue('instance.identi...')
+#12 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(109): OrangeHRM\Core\Service\ConfigService->getInstanceIdentifier()
+#13 C:\xampp\htdocs\orangehrm\src\plugins\orangehrmCorePlugin\config\CorePluginConfiguration.php(91): CorePluginConfiguration->registerCoreSubscribers()
+#14 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(137): CorePluginConfiguration->initialize(Object(OrangeHRM\Framework\Http\Request))
+#15 C:\xampp\htdocs\orangehrm\src\lib\framework\Framework.php(154): OrangeHRM\Framework\Framework->configurePlugins(Object(OrangeHRM\Framework\Http\Request))
+#16 C:\xampp\htdocs\orangehrm\web\index.php(41): OrangeHRM\Framework\Framework->handleRequest(Object(OrangeHRM\Framework\Http\Request))
+#17 {main}
+  thrown in C:\xampp\htdocs\orangehrm\src\vendor\doctrine\dbal\src\Driver\API\MySQL\ExceptionConverter.php on line 101

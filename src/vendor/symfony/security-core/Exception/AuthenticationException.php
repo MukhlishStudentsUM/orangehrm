@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Security\Core\Exception;
 
-use Symfony\Component\HttpKernel\Attribute\WithHttpStatus;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
@@ -20,19 +19,24 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Alexander <iam.asm89@gmail.com>
  */
-#[WithHttpStatus(401)]
 class AuthenticationException extends RuntimeException
 {
-    private ?TokenInterface $token = null;
+    /** @internal */
+    protected $serialized;
+
+    private $token = null;
+
+    public function __construct(string $message = '', int $code = 0, \Throwable $previous = null)
+    {
+        unset($this->serialized);
+        parent::__construct($message, $code, $previous);
+    }
 
     public function getToken(): ?TokenInterface
     {
         return $this->token;
     }
 
-    /**
-     * @return void
-     */
     public function setToken(TokenInterface $token)
     {
         $this->token = $token;
@@ -95,5 +99,24 @@ class AuthenticationException extends RuntimeException
     public function getMessageData(): array
     {
         return [];
+    }
+
+    /**
+     * @internal
+     */
+    public function __sleep(): array
+    {
+        $this->serialized = $this->__serialize();
+
+        return ['serialized'];
+    }
+
+    /**
+     * @internal
+     */
+    public function __wakeup(): void
+    {
+        $this->__unserialize($this->serialized);
+        unset($this->serialized);
     }
 }

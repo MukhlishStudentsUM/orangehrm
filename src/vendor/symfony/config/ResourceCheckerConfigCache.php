@@ -40,6 +40,9 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         $this->resourceCheckers = $resourceCheckers;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPath(): string
     {
         return $this->file;
@@ -105,11 +108,9 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
      * @param string              $content  The content to write in the cache
      * @param ResourceInterface[] $metadata An array of metadata
      *
-     * @return void
-     *
      * @throws \RuntimeException When cache file can't be written
      */
-    public function write(string $content, ?array $metadata = null)
+    public function write(string $content, array $metadata = null)
     {
         $mode = 0666;
         $umask = umask();
@@ -117,7 +118,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         $filesystem->dumpFile($this->file, $content);
         try {
             $filesystem->chmod($this->file, $mode, $umask);
-        } catch (IOException) {
+        } catch (IOException $e) {
             // discard chmod failure (some filesystem may not support it)
         }
 
@@ -125,12 +126,12 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
             $filesystem->dumpFile($this->getMetaFile(), serialize($metadata));
             try {
                 $filesystem->chmod($this->getMetaFile(), $mode, $umask);
-            } catch (IOException) {
+            } catch (IOException $e) {
                 // discard chmod failure (some filesystem may not support it)
             }
         }
 
-        if (\function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOL)) {
+        if (\function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOLEAN)) {
             @opcache_invalidate($this->file, true);
         }
     }
@@ -143,14 +144,14 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         return $this->file.'.meta';
     }
 
-    private function safelyUnserialize(string $file): mixed
+    private function safelyUnserialize(string $file)
     {
         $meta = false;
         $content = file_get_contents($file);
         $signalingException = new \UnexpectedValueException();
         $prevUnserializeHandler = ini_set('unserialize_callback_func', self::class.'::handleUnserializeCallback');
         $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context = []) use (&$prevErrorHandler, $signalingException) {
-            if (__FILE__ === $file && !\in_array($type, [\E_DEPRECATED, \E_USER_DEPRECATED], true)) {
+            if (__FILE__ === $file) {
                 throw $signalingException;
             }
 
@@ -174,7 +175,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
     /**
      * @internal
      */
-    public static function handleUnserializeCallback(string $class): void
+    public static function handleUnserializeCallback(string $class)
     {
         trigger_error('Class not found: '.$class);
     }

@@ -19,7 +19,7 @@ namespace Symfony\Component\Security\Core\User;
  * @author Robin Chalas <robin.chalas@gmail.com>
  * @author Fabien Potencier <fabien@symfony.com>
  */
-final class InMemoryUser implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface, \Stringable
+final class InMemoryUser implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     private string $username;
     private ?string $password;
@@ -43,11 +43,17 @@ final class InMemoryUser implements UserInterface, PasswordAuthenticatedUserInte
         return $this->getUserIdentifier();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRoles(): array
     {
         return $this->roles;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -76,10 +82,16 @@ final class InMemoryUser implements UserInterface, PasswordAuthenticatedUserInte
         return $this->enabled;
     }
 
-    public function eraseCredentials(): void
+    /**
+     * {@inheritdoc}
+     */
+    public function eraseCredentials()
     {
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isEqualTo(UserInterface $user): bool
     {
         if (!$user instanceof self) {

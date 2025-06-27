@@ -25,13 +25,13 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class WebProcessor extends BaseWebProcessor implements EventSubscriberInterface
 {
-    public function __construct(?array $extraFields = null)
+    public function __construct(array $extraFields = null)
     {
         // Pass an empty array as the default null value would access $_SERVER
         parent::__construct([], $extraFields);
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelRequest(RequestEvent $event)
     {
         if ($event->isMainRequest()) {
             $this->serverData = $event->getRequest()->server->all();

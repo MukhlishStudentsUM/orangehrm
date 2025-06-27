@@ -67,10 +67,10 @@ class AttendanceRecord extends \OrangeHRM\Entity\AttendanceRecord implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'id', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'employee', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'state', 'entityDecorator'];
+            return ['__isInitialized__', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'id', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'employee', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInAddress', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutAddress', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'state', 'entityDecorator'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'id', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'employee', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'state', 'entityDecorator'];
+        return ['__isInitialized__', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'id', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'employee', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInAddress', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchInUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUtcTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutNote', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutAddress', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimeOffset', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutTimezoneName', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'punchOutUserTime', '' . "\0" . 'OrangeHRM\\Entity\\AttendanceRecord' . "\0" . 'state', 'entityDecorator'];
     }
 
     /**
@@ -272,6 +272,28 @@ class AttendanceRecord extends \OrangeHRM\Entity\AttendanceRecord implements \Do
     /**
      * {@inheritDoc}
      */
+    public function getPunchInAddress(): ?string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPunchInAddress', []);
+
+        return parent::getPunchInAddress();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPunchInAddress(?string $punchInAddress): void
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPunchInAddress', [$punchInAddress]);
+
+        parent::setPunchInAddress($punchInAddress);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPunchInTimeOffset(): ?string
     {
 
@@ -355,6 +377,28 @@ class AttendanceRecord extends \OrangeHRM\Entity\AttendanceRecord implements \Do
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPunchOutNote', [$punchOutNote]);
 
         parent::setPunchOutNote($punchOutNote);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPunchOutAddress(): ?string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPunchOutAddress', []);
+
+        return parent::getPunchOutAddress();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPunchOutAddress(?string $punchOutAddress): void
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPunchOutAddress', [$punchOutAddress]);
+
+        parent::setPunchOutAddress($punchOutAddress);
     }
 
     /**

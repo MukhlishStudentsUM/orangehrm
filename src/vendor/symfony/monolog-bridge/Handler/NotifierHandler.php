@@ -12,9 +12,7 @@
 namespace Symfony\Bridge\Monolog\Handler;
 
 use Monolog\Handler\AbstractHandler;
-use Monolog\Level;
 use Monolog\Logger;
-use Monolog\LogRecord;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Notifier;
 use Symfony\Component\Notifier\NotifierInterface;
@@ -23,23 +21,19 @@ use Symfony\Component\Notifier\NotifierInterface;
  * Uses Notifier as a log handler.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @final since Symfony 6.1
  */
 class NotifierHandler extends AbstractHandler
 {
-    use CompatibilityHandler;
+    private $notifier;
 
-    private NotifierInterface $notifier;
-
-    public function __construct(NotifierInterface $notifier, string|int|Level $level = Logger::ERROR, bool $bubble = true)
+    public function __construct(NotifierInterface $notifier, string|int $level = Logger::ERROR, bool $bubble = true)
     {
         $this->notifier = $notifier;
 
         parent::__construct(Logger::toMonologLevel($level) < Logger::ERROR ? Logger::ERROR : $level, $bubble);
     }
 
-    private function doHandle(array|LogRecord $record): bool
+    public function handle(array $record): bool
     {
         if (!$this->isHandling($record)) {
             return false;
@@ -52,7 +46,7 @@ class NotifierHandler extends AbstractHandler
 
     public function handleBatch(array $records): void
     {
-        if ($records = array_filter($records, $this->isHandling(...))) {
+        if ($records = array_filter($records, [$this, 'isHandling'])) {
             $this->notify($records);
         }
     }
@@ -71,7 +65,7 @@ class NotifierHandler extends AbstractHandler
         $this->notifier->send($notification, ...$this->notifier->getAdminRecipients());
     }
 
-    private function getHighestRecord(array $records): array|LogRecord
+    private function getHighestRecord(array $records)
     {
         $highestRecord = null;
         foreach ($records as $record) {

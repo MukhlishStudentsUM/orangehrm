@@ -33,13 +33,16 @@ class AuthenticatedVoter implements CacheableVoterInterface
     public const IS_REMEMBERED = 'IS_REMEMBERED';
     public const PUBLIC_ACCESS = 'PUBLIC_ACCESS';
 
-    private AuthenticationTrustResolverInterface $authenticationTrustResolver;
+    private $authenticationTrustResolver;
 
     public function __construct(AuthenticationTrustResolverInterface $authenticationTrustResolver)
     {
         $this->authenticationTrustResolver = $authenticationTrustResolver;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function vote(TokenInterface $token, mixed $subject, array $attributes): int
     {
         if ($attributes === [self::PUBLIC_ACCESS]) {
